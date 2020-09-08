@@ -1,0 +1,29 @@
+resources:
+  - name: src_code_app_dotnet
+    type: GitRepo
+    configuration:
+      gitProvider: yann_github
+      path: cyan21/dotnet-core-webapiV2
+      branches:
+        include: jfrog 
+      buildOn:
+         commit: false
+
+  - name: bi_app_dotnet 
+    type: BuildInfo 
+    configuration:
+      sourceArtifactory: artifactory_eu
+      buildName: ${pipeline_name} 
+      buildNumber: ${run_number} 
+
+  - name: bi_app_dotnet_promoted_staging
+    type: BuildInfo 
+    configuration:
+      sourceArtifactory: artifactory_eu
+      buildName: ${pipeline_name} 
+      buildNumber: ${run_number} 
+
+  - name: pb_app_dotnet
+    type: PropertyBag
+    configuration:
+      biNumber: XXX

@@ -1,0 +1,79 @@
+pipelines:
+  - name: app_dotnet
+    configuration:
+      environmentVariables:
+        readOnly:
+          myDockerRegistry: dark-docker.artifactory-eu.soleng-emea.jfrog.team
+          nugetRepo: dark-nuget
+          genericRepo: dark-generic
+          genericPromoteRepo: dark-rc-generic-local
+    steps:
+      - name: setup_env
+        type: Bash
+        configuration:
+          affinityGroup: dotnet
+          runtime:
+            type: host
+        execution:
+          onExecute:
+            - sudo mkdir -p /etc/docker 
+            - > 
+              sudo jq -n  "{\"insecure-registries\": [\"${myDockerRegistry}\"]}" > /etc/docker/daemon.json
+            - sudo systemctl restart docker
+            - sudo cat /etc/docker/daemon.json
+            - sudo systemctl status docker
+      - name: build_app_dotnet
+        type: Bash
+        configuration:
+          affinityGroup: dotnet
+          runtime:
+            type: image
+            image:
+              custom:
+                registry: artifactory_eu
+                name: ${myDockerRegistry}/dotnet/core/sdk
+                tag: 3.1-jfrog
+                sourceRepository: ${myDockerRegistry}
+          inputSteps:
+            - name: setup_env
+          inputResources:
+            - name: src_code_app_dotnet
+          outputResources:
+            - name: bi_app_dotnet
+          integrations:
+            - name: artifactory_eu
+        execution:
+          onStart:
+            # below is a string substition : replacing the /artifactory in the integration url by /uiÒ
+            - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/app_dotnet/${run_number}/setup_env?branch=jfrog"
+            - cd ${res_src_code_app_dotnet_resourcePath} && ls -l
+            - jfrog rt dotnetc --server-id-resolve artifactory_eu --repo-resolve ${nugetRepo}
+            - ls -l .jfrog/projects && cat .jfrog/projects/dotnet.yaml
+            - jfrog rt dotnet build MyWebAPI -c Release --build-name=${pipeline_name} --build-number=${run_number} --module=dependencies
+            - jfrog rt u MyWebAPI/bin/Release/**/MyWebAPI.dll ${genericRepo} --build-name=${pipeline_name} --build-number=${run_number} --module=result
+            - jfrog rt bce ${pipeline_name} ${run_number}
+            - jfrog rt bp ${pipeline_name} ${run_number}
+
+      - name: scan_app_dotnet
+        type: XrayScan
+        configuration:
+          failOnScan: false
+          inputResources:
+            - name: bi_app_dotnet
+              trigger: true
+
+      - name: promote_nuget
+        type: PromoteBuild
+        configuration:
+          targetRepository: ${nugetPromoteRepo}
+          includeDependencies: false
+          status: Passed
+          comment: Artifact passed Xray Scan
+          copy: false
+          inputSteps:
+            - name: scan_app_dotnet
+          inputResources:
+            - name: bi_app_dotnet
+          outputResources:
+            - name: pb_app_dotnet
+            - name: bi_app_dotnet_promoted_staging
