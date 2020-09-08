@@ -8,8 +8,7 @@ JFrog platform enabling Artifactory, Xray, Pipelines
 | Artifactory | Nuget local repo   | dark-dev-nuget-local | | 
 | Artifactory | Nuget local repo   | dark-rc-nuget-local | for nuget promotion | 
 | Artifactory | Nuget remote repo  | dark-nugetorg-remote | | 
-| Artifactory | Docker local repo   | dark-dev-docker-local | | 
-| Artifactory | Docker local repo   | dark-rc-docker-local | for docker promotion | 
+| Artifactory | Docker local repo   | dark-release-docker-local | | 
 | Artifactory | Docker remote repo  | dark-dockerhub-remote | | 
 | Artifactory | Generic local repo   | dark-dev-generic-local | | 
 | Artifactory | Generic local repo   | dark-rc-generic-local | for  promotion | 
@@ -19,7 +18,7 @@ JFrog platform enabling Artifactory, Xray, Pipelines
 ## Repository creation
 
 ````
-curl -uadmin:chaysinh -X PATCH "http://localhost:8081/artifactory/api/system/configuration" -H "Content-Type: application/yaml" -T repo.yml
+curl -uadmin:chaysinh -X PATCH "http://localhost:8081/artifactory/api/system/configuration" -H "Content-Type: application/yaml" -T repo.yaml
 ````
 
 if you change the repo names, make sure to edit : 
