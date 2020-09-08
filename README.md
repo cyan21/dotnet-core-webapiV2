@@ -2,7 +2,15 @@
 
 simple WebAPI example based on the dotnet CLI
 
-How it was initialized  :
+## Requirement
+
+## Background
+
+This project was created on ubuntu 
+
+https://docs.microsoft.com/en-us/dotnet/core/install/linux-ubuntu
+
+It was initialized by using the dotnet CLI
 
 ```
 mkdir -p webapi-project/{MyWebAPI,MyWebAPI.Tests}
@@ -11,7 +19,6 @@ dotnet new sln
 cd MyWebAPI 
 dotnet new webapi
 dotnet build
-dotnet run
 ```
 
 ## Customization
@@ -19,7 +26,22 @@ dotnet run
 * added the "SayHiController.cs" in the Controller folder
 
 ## To test 
+
+* run the server on localhost 
 ```
-curl -k http://localhost:5000/api/weatherforecast
-curl -k http://localhost:5000/api/sayhi/{fr,jp,en}
+// from the  MyWebAPI folder
+dotnet run
+
+curl -L -k http://localhost:5000/api/weatherforecast
+curl -L -k http://localhost:5000/api/sayhi/{fr,jp,en}
+```
+or 
+
+* run the server on localhost 
+```
+// from the  MyWebAPI folder
+dotnet run --urls "http://192.168.21.22:2000"
+
+curl http://192.168.21.22:2000/api/weatherforecast
+curl http://192.168.21.22:2000/api/sayhi/{fr,jp,en}
 ```
