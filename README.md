@@ -40,7 +40,8 @@ or
 * run the server on localhost 
 ```
 // from the  MyWebAPI folder
-dotnet run --urls "http://192.168.21.22:2000"
+// host IP : 192.168.21.22
+dotnet run --urls "http://0.0.0.0:2000"
 
 curl http://192.168.21.22:2000/api/weatherforecast
 curl http://192.168.21.22:2000/api/sayhi/{fr,jp,en}
