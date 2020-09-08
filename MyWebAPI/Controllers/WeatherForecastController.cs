@@ -58,9 +58,9 @@ namespace MyWebAPI.Controllers
             string res = new string("This is how to say Hello in ");
             switch (langCode)
             {
-                case "fr": res += "french : " + g.fr(); break;
-                case "sp": res += "spanish : " + g.sp(); break;
-                case "jp": res += "japanese : " + g.jp(); break;
+                case "fr": res += "french : " + g.fr() + "\n"; break;
+                case "sp": res += "spanish : " + g.sp() + "\n"; break;
+                case "jp": res += "japanese : " + g.jp() + "\n"; break;
                 default: break;
             }
             return res;
