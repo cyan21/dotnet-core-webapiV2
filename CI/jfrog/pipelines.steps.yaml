@@ -46,6 +46,7 @@ pipelines:
           onStart:
             # below is a string substition : replacing the /artifactory in the integration url by /uiÒ
             - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/app_dotnet/${run_number}/setup_env?branch=jfrog"
+            - export APP_VERSION="2.0"
             - cd ${res_src_code_app_dotnet_resourcePath} && ls -l
             - jfrog rt dotnetc --server-id-resolve artifactory_eu --repo-resolve ${nugetRepo}
             - ls -l .jfrog/projects && cat .jfrog/projects/dotnet.yaml
