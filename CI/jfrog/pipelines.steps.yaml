@@ -50,7 +50,9 @@ pipelines:
             - jfrog rt dotnetc --server-id-resolve artifactory_eu --repo-resolve ${nugetRepo}
             - ls -l .jfrog/projects && cat .jfrog/projects/dotnet.yaml
             - jfrog rt dotnet build MyWebAPI -c Release --build-name=${pipeline_name} --build-number=${run_number} --module=dependencies
-            - jfrog rt u MyWebAPI/bin/Release/**/MyWebAPI.dll ${genericRepo} --build-name=${pipeline_name} --build-number=${run_number} --module=result
+            - jfrog rt dotnet publish -c Release MyWebAPI/
+            - tar czvf webapi-${APP_VERSION}.tar.gz -C MyWebAPI/bin/Release/netcoreapp3.1/publish $(ls MyWebAPI/bin/Release/netcoreapp3.1/publish)
+            - jfrog rt u webapi-${APP_VERSION}.tar.gz  ${genericRepo} --build-name=${pipeline_name} --build-number=${run_number} --module=result
             - jfrog rt bce ${pipeline_name} ${run_number}
             - jfrog rt bp ${pipeline_name} ${run_number}
 
