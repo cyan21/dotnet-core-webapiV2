@@ -2,16 +2,31 @@ localRepositories:
   dark-dev-nuget-local:
     type: nuget
     repoLayout: nuget-default 
+    forceNugetAuthentication: true
     xray:   
       enabled: true
   dark-rc-nuget-local:
     type: nuget
     repoLayout: nuget-default 
+    forceNugetAuthentication: true
+    xray:   
+      enabled: true
+  dark-dev-docker-local:
+    type: docker
+    repoLayout: simple-default 
+    dockerApiVersion: V2
+    xray:   
+      enabled: true
+  dark-sit-docker-local:
+    type: docker
+    repoLayout: simple-default 
+    dockerApiVersion: V2
     xray:   
       enabled: true
   dark-release-docker-local:
     type: docker
     repoLayout: simple-default 
+    dockerApiVersion: V2
     xray:   
       enabled: true
   dark-dev-generic-local:
@@ -55,7 +70,7 @@ virtualRepositories:
     forceNugetAuthentication: true
     repositories:   
       - dark-dev-nuget-local
-      - dark-release-nuget-local
+      - dark-rc-nuget-local
       - dark-nugetorg-remote
     defaultDeploymentRepo: dark-dev-nuget-local
   dark-docker:
@@ -64,6 +79,8 @@ virtualRepositories:
     repoLayout: simple-default 
     repositories:   
       - dark-release-docker-local
+      - dark-sit-docker-local
+      - dark-dev-docker-local
       - dark-dockerhub-remote
       - dark-mcr-remote
     defaultDeploymentRepo: dark-release-docker-local
