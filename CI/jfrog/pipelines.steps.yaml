@@ -49,6 +49,8 @@ pipelines:
             - export APP_VERSION="2.0"
             - cd ${res_src_code_app_dotnet_resourcePath} && ls -l
             - git checkout jfrog
+            - dotnet nuget locals all --list 
+            - dotnet nuget locals all --clear
             - cat MyWebAPI/MyWebAPI.csproj
             - jfrog rt dotnetc --server-id-resolve artifactory_eu --repo-resolve ${nugetRepo}
             - ls -l .jfrog/projects && cat .jfrog/projects/dotnet.yaml
