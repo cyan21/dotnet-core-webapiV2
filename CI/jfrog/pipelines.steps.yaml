@@ -3,7 +3,7 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          myDockerRegistry: dark-docker.artifactory-eu.soleng-emea.jfrog.team
+          myDockerRegistry: dark-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
           nugetRepo: dark-nuget
           genericRepo: dark-generic
           genericPromoteRepo: dark-rc-generic-local
