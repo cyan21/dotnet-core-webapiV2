@@ -3,7 +3,8 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          myDockerRegistry: dark-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
+          myDockerRegistry: dark-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
+          baseImageTag: 3.1-jfrog
           nugetRepo: dark-nuget
           genericRepo: dark-generic
           genericPromoteRepo: dark-rc-generic-local
@@ -32,7 +33,7 @@ pipelines:
               custom:
                 registry: artifactory_eu
                 name: ${myDockerRegistry}/dotnet/core/sdk
-                tag: 3.1-jfrog
+                tag: ${baseImageTag}
                 sourceRepository: ${myDockerRegistry}
           inputSteps:
             - name: setup_env
