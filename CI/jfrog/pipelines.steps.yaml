@@ -48,7 +48,7 @@ pipelines:
             # below is a string substition : replacing the /artifactory in the integration url by /uiÒ
             - export JFROG_CLI_BUILD_URL="${int_artifactory_eu_url/%artifactory/ui}/pipelines/myPipelines/app_dotnet/${run_number}/setup_env?branch=${res_src_code_app_dotnet_branchName}"
             - cd ${res_src_code_app_dotnet_resourcePath} && ls -l
-            - git checkout jfrog
+            - git checkout ${res_src_code_lib_nuget_branchName}
             - dotnet nuget locals all --list 
             - dotnet nuget locals all --clear
             - cat MyWebAPI/MyWebAPI.csproj
