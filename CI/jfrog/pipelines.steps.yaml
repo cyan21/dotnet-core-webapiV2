@@ -3,11 +3,12 @@ pipelines:
     configuration:
       environmentVariables:
         readOnly:
-          runVarDockerRegistry: dark-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
-          runVarBaseImageTag: 3.1-jfrog
-          runVarNugetRepo: dark-nuget
-          runVarGenericRepo: dark-generic
-          runVarGenericPromoteRepo: dark-rc-generic-local
+          envVarDockerRepo: dark-docker
+          envVarDockerRegistry: ${envVarDockerRepo}.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
+          envVarBaseImageTag: 3.1-jfrog
+          envVarNugetRepo: dark-nuget
+          envVarGenericRepo: dark-generic
+          envVarGenericPromoteRepo: dark-rc-generic-local
     steps:
       - name: setup_env
         type: Bash
@@ -19,7 +20,7 @@ pipelines:
           onExecute:
             - sudo mkdir -p /etc/docker 
             - > 
-              sudo jq -n  "{\"insecure-registries\": [\"${runVarDockerRegistry}\"]}" > /etc/docker/daemon.json
+              sudo jq -n  "{\"insecure-registries\": [\"${envVarDockerRegistry}\"]}" > /etc/docker/daemon.json
             - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
             - sudo systemctl status docker
@@ -32,9 +33,9 @@ pipelines:
             image:
               custom:
                 registry: artifactory_eu
-                name: ${runVarDockerRegistry}/dotnet/core/sdk
-                tag: ${runVarBaseImageTag}
-                sourceRepository: ${runVarDockerRegistry}
+                name: ${envVarDockerRegistry}/dotnet/core/sdk
+                tag: ${envVarBaseImageTag}
+                sourceRepository: ${envVarDockerRepo}
           inputSteps:
             - name: setup_env
           inputResources:
@@ -55,12 +56,12 @@ pipelines:
             - cat MyWebAPI/MyWebAPI.csproj
             - appVersion=`sed -n "s/[[:space:]]*<Version>\(.*\)<\/Version>/\1/p" MyWebAPI/MyWebAPI.csproj`
             - echo $appVersion
-            - jfrog rt dotnetc --server-id-resolve artifactory_eu --repo-resolve ${runVarNugetRepo}
+            - jfrog rt dotnetc --server-id-resolve artifactory_eu --repo-resolve ${envVarNugetRepo}
             - ls -l .jfrog/projects && cat .jfrog/projects/dotnet.yaml
             - jfrog rt dotnet build MyWebAPI -c Release --build-name=${pipeline_name} --build-number=${run_number} --module=dependencies
             - jfrog rt dotnet publish -c Release MyWebAPI/
             - tar czvf webapi-${appVersion}.tar.gz -C MyWebAPI/bin/Release/netcoreapp3.1/publish $(ls MyWebAPI/bin/Release/netcoreapp3.1/publish)
-            - jfrog rt u webapi-${appVersion}.tar.gz  ${runVarGenericRepo} --build-name=${pipeline_name} --build-number=${run_number} --module=result
+            - jfrog rt u webapi-${appVersion}.tar.gz  ${envVarGenericRepo} --build-name=${pipeline_name} --build-number=${run_number} --module=result
             - jfrog rt bce ${pipeline_name} ${run_number}
             - jfrog rt bp ${pipeline_name} ${run_number}
 
@@ -72,10 +73,10 @@ pipelines:
             - name: bi_app_dotnet
               trigger: true
 
-      - name: promote_nuget
+      - name: promote_dotnet
         type: PromoteBuild
         configuration:
-          targetRepository: ${runVarGenericPromoteRepo}
+          targetRepository: ${envVarGenericPromoteRepo}
           includeDependencies: false
           status: Passed
           comment: Artifact passed Xray Scan

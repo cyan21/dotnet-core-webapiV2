@@ -42,7 +42,7 @@ localRepositories:
 remoteRepositories: 
   dark-nugetorg-remote:
     type: nuget
-    forceNugetAuthentication: true
+    forceNugetAuthentication: false
     repoLayout: nuget-default 
     url: https://www.nuget.org
     xray:   
@@ -67,7 +67,7 @@ virtualRepositories:
   dark-nuget:
     type: nuget
     repoLayout: nuget-default 
-    forceNugetAuthentication: true
+    forceNugetAuthentication: false
     repositories:   
       - dark-dev-nuget-local
       - dark-rc-nuget-local
