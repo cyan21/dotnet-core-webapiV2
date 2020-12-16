@@ -44,7 +44,7 @@ remoteRepositories:
     type: nuget
     forceNugetAuthentication: false
     repoLayout: nuget-default 
-    url: https://www.nuget.org
+    url: https://www.nuget.org/
     xray:   
       enabled: true
   dark-dockerhub-remote:
@@ -57,7 +57,7 @@ remoteRepositories:
       enabled: true
   dark-mcr-remote:
     type: docker 
-    url: https://mcr.microsoft.com
+    url: https://mcr.microsoft.com/
     dockerApiVersion: V2
     repoLayout: simple-default 
     enableTokenAuthentication: true
