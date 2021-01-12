@@ -5,7 +5,7 @@ resources:
       gitProvider: yann_github
       path: cyan21/dotnet-core-webapiV2
       branches:
-        include: jfrog-ode 
+        include: jfrog-ode-yannc3 
       buildOn:
          commit: false
 

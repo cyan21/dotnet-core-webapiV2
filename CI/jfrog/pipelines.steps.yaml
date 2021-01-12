@@ -4,7 +4,7 @@ pipelines:
       environmentVariables:
         readOnly:
           envVarDockerRepo: dark-docker
-          envVarDockerRegistry: ${envVarDockerRepo}.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
+          envVarDockerRegistry: ${envVarDockerRepo}.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
           envVarBaseImageTag: 3.1-jfrog
           envVarNugetRepo: dark-nuget
           envVarGenericRepo: dark-generic
