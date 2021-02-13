@@ -34,7 +34,7 @@ if you change the integration name, make sure to update "--server-id-resolve" pa
 ````
 - jfrog rt dotnetc --server-id-resolve artifactory_eu --repo-resolve ${nugetRepo}
 ````
-
+> TO MAKE THE DEPENDENCY RESOLUTION, YOU MAY HAVE TO DISABLE OR ENABLE THE "FORCE AUTHENTICATION" ON  THE REMOTE
 
 ## Generate a custom runtime image
 
