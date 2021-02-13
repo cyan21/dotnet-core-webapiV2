@@ -7,6 +7,7 @@ localRepositories:
       enabled: true
   dark-nuget-rc-local:
     type: nuget
+    forceNugetAuthentication: true
     repoLayout: nuget-default 
     xray:   
       enabled: true
@@ -35,7 +36,7 @@ remoteRepositories:
     type: nuget
     repoLayout: nuget-default 
     url: https://www.nuget.org/
-    forceNugetAuthentication: false
+    forceNugetAuthentication: true
     xray:   
       enabled: true
   dark-dockerhub-remote:

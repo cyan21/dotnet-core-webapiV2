@@ -101,7 +101,7 @@ dotnetAppSteps:
     name: scan_dotnet_lib
   promotion:
     name: promote_dotnet_app
-    includeDependencies: true
+    includeDependencies: false
     status: XRAY_SCAN_OK
     comment: "Artifact passed Xray Scan"
     copy: false
