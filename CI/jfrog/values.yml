@@ -1,0 +1,43 @@
+dotnetProject:
+  pipelineName: dotnet_app
+  # container image used for the build 
+  container:
+    registry: dark-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
+    image: dotnet/core/sdk
+    tag: 3.1-jfrog
+    # repoSource: dark-docker
+    # repoPromotion1: dark-docker-release-local
+  nuget:
+    repoSource: dark-nuget #dark-nugetorg-remote
+    repoPromotion1: dark-nuget-rc-local
+  generic:
+    repoSource: dark-generic 
+    repoPromotion1: dark-generic-rc-local    
+  artifactoryIntegration: artifactory_eu
+  
+dotnetAppResources:
+  gitRepo: 
+    name: src_code_dotnet_app
+    gitProvider: yann_github
+    path: cyan21/dotnet-core-webapiV2
+    branches:
+      include: demo
+  buildInfo:
+    resourceName: bi_dotnet_app
+    name: dotnet_app
+  buildInfoPromoted:
+    resourceName: bi_dotnet_app_promoted
+  propertyBag:
+    name: pb_dotnet_app
+
+dotnetAppSteps:
+  buildApp:
+    name: build_app_dotnet
+  xray:
+    name: scan_lib_nuget
+  promotion:
+    name: promote_nuget
+    includeDependencies: true
+    status: XRAY_SCAN_OK
+    comment: "Artifact passed Xray Scan"
+    copy: false
