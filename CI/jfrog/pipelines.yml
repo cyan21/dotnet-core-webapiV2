@@ -287,8 +287,8 @@ pipelines:
             - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
             - sudo systemctl status docker
-            - echo {res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
-            - add_run_variables runVarlibVersion=${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
+            - echo ${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
+            - add_run_variables runVarLibVersion=${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
 
       - name: {{ .Values.dotnetAppSteps.buildApp.name }}
         type: Bash
@@ -321,6 +321,7 @@ pipelines:
             - dotnet nuget locals all --clear
             - cat MyWebAPI/MyWebAPI.csproj
             # bump lib version
+            - sed "s/Greeting\" Version=\"[0-9.]*\"/Greeting\" Version=\"${runVarLibVersion}\"/" MyWebAPI/MyWebAPI.csproj
             - sed -i "s/Greeting\" Version=\"[0-9.]*\"/Greeting\" Version=\"${runVarLibVersion}\"/" MyWebAPI/MyWebAPI.csproj
             - cat MyWebAPI/MyWebAPI.csproj
             - appVersion=`sed -n "s/[[:space:]]*<Version>\(.*\)<\/Version>/\1/p" MyWebAPI/MyWebAPI.csproj`
