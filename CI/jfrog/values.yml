@@ -5,7 +5,7 @@ dotnetProject:
     registry: dark-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
     image: dotnet/core/sdk
     tag: 3.1-jfrog
-    # repoSource: dark-docker
+    repoSource: dark-docker
     # repoPromotion1: dark-docker-release-local
   nuget:
     repoSource: dark-nuget #dark-nugetorg-remote

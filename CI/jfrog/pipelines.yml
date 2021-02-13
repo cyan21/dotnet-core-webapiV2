@@ -26,10 +26,10 @@ resources:
       buildName: {{ .Values.dotnetAppResources.buildInfo.resourceName }}
       buildNumber: ${run_number} 
 
-  # - name: {{ .Values.dotnetAppResources.propertyBag.name }}
-  #   type: PropertyBag
-  #   configuration:
-  #     biNumber: XXX
+  - name: {{ .Values.dotnetAppResources.propertyBag.name }}
+    type: PropertyBag
+    configuration:
+      biNumber: XXX
 
 pipelines:
   - name: {{ .Values.dotnetProject.pipelineName }}
