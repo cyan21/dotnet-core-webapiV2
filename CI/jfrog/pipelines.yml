@@ -39,7 +39,35 @@ resources:
 ################
 # LIB 
 ################
+  - name: {{ .Values.dotnetLibResources.gitRepo.name }}
+    type: GitRepo
+    configuration:
+      gitProvider: {{ .Values.dotnetLibResources.gitRepo.gitProvider }}
+      path: {{ .Values.dotnetLibResources.gitRepo.path }}
+      branches:
+        include: {{ .Values.dotnetLibResources.gitRepo.branches.include }}
+      buildOn:
+         commit: false
 
+  - name: {{ .Values.dotnetLibResources.buildInfo.resourceName }}
+    type: BuildInfo 
+    configuration:
+      sourceArtifactory: {{ .Values.dotnetProject.artifactoryIntegration }}
+      buildName: {{ .Values.dotnetLibResources.buildInfo.name }} 
+      buildNumber: ${run_number} 
+
+  - name: {{ .Values.dotnetLibResources.buildInfoPromoted.resourceName }}
+    type: BuildInfo 
+    configuration:
+      sourceArtifactory: {{ .Values.dotnetProject.artifactoryIntegration }}
+      buildName: {{ .Values.dotnetLibResources.buildInfo.resourceName }}
+      buildNumber: ${run_number} 
+
+  - name: {{ .Values.dotnetLibResources.propertyBag.name }}
+    type: PropertyBag
+    configuration:
+      biNumber: XXX
+      
 ################
 # APP 
 ################

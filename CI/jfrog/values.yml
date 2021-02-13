@@ -4,11 +4,11 @@ dotnetProject:
   pipelineNameDotnetApp: dotnet_app
   # container image used for the build 
   container:
-    registry: dark-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
+    registry: dark-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
     image: dotnet/core/sdk
     tag: 3.1-jfrog
     repoSource: dark-docker
-    # repoPromotion1: dark-docker-release-local
+    repoPromotion1: dark-docker-release-local
   nuget:
     repoSource: dark-nuget #dark-nugetorg-remote
     repoPromotion1: dark-nuget-rc-local
@@ -21,9 +21,9 @@ dotnetInitResources:
   gitRepo: 
     name: src_dockerfile_base_image_dotnet
     gitProvider: yann_github
-    path: cyan21/dotnet-core-greeting-lib
+    path: cyan21/dotnet-core-webapiV2
     branches:
-      include: demo
+      include: master
     files:
       include: CI/jfrog/Dockerfile
   buildInfo:
@@ -54,9 +54,11 @@ dotnetLibResources:
   gitRepo: 
     name: src_code_dotnet_lib
     gitProvider: yann_github
-    path: cyan21/dotnet-core-greeting-lib
+    path: cyan21/dotnet-core-webapiV2
     branches:
-      include: demo
+      include: master
+    files:
+      include:
   buildInfo:
     resourceName: bi_dotnet_lib
     name: dotnet_lib
@@ -83,7 +85,7 @@ dotnetAppResources:
     gitProvider: yann_github
     path: cyan21/dotnet-core-webapiV2
     branches:
-      include: demo
+      include: master
   buildInfo:
     resourceName: bi_dotnet_app
     name: dotnet_app
