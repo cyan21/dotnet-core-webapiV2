@@ -67,7 +67,7 @@ resources:
     type: PropertyBag
     configuration:
       biNumber: XXX
-      
+
 ################
 # APP 
 ################
@@ -237,6 +237,7 @@ pipelines:
             - jfrog rt u MyLib/greeting/bin/Release/Greeting.${appVersion}.nupkg {{ .Values.dotnetProject.nuget.repoSource }} --build-name={{ .Values.dotnetLibResources.buildInfo.name }} --build-number=${run_number} --module=result
             - jfrog rt bce {{ .Values.dotnetLibResources.buildInfo.name }} ${run_number}
             - jfrog rt bp {{ .Values.dotnetLibResources.buildInfo.name }} ${run_number}
+            - add_run_variables runVarlibVersion=${appVersion}
 
       - name: {{ .Values.dotnetLibSteps.xray.name }}
         type: XrayScan
@@ -261,6 +262,9 @@ pipelines:
           outputResources:
             - name: {{ .Values.dotnetLibResources.propertyBag.name }}
             - name: {{ .Values.dotnetLibResources.buildInfoPromoted.resourceName }}
+        execution:
+          onSuccess:
+            - write_output {{ .Values.dotnetLibResources.propertyBag.name }} libVersion=${runVarlibVersion}
 
 ################
 # APP 
@@ -283,6 +287,9 @@ pipelines:
             - sudo systemctl restart docker
             - sudo cat /etc/docker/daemon.json
             - sudo systemctl status docker
+            - echo {res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
+            - add_run_variables runVarlibVersion=${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
+
       - name: {{ .Values.dotnetAppSteps.buildApp.name }}
         type: Bash
         configuration:
@@ -312,6 +319,9 @@ pipelines:
             - git checkout {{ .Values.dotnetAppResources.gitRepo.branches.include }}
             - dotnet nuget locals all --list 
             - dotnet nuget locals all --clear
+            - cat MyWebAPI/MyWebAPI.csproj
+            # bump lib version
+            - sed -i "s/Greeting\" Version=\"[0-9.]*\"/Greeting\" Version=\"${runVarLibVersion}\"/" MyWebAPI/MyWebAPI.csproj
             - cat MyWebAPI/MyWebAPI.csproj
             - appVersion=`sed -n "s/[[:space:]]*<Version>\(.*\)<\/Version>/\1/p" MyWebAPI/MyWebAPI.csproj`
             - echo $appVersion
