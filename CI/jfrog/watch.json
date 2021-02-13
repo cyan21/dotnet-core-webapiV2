@@ -1,0 +1,96 @@
+{
+    "general_data": {
+        "name": "dark",
+        "description": "This is a new watch created using API V2",
+        "active": true
+    },
+    "project_resources": {
+        "resources": [
+            {
+                "type": "repository",
+                "name": "dark-nuget-dev-local",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "name": "dark-nuget-rc-local",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "name": "dark-docker-release-local",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "repo_type": "remote",
+                "name": "dark-nugetorg-remote",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "repo_type": "remote",
+                "name": "dark-dockerhub-remote",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },  
+            {
+                "type": "repository",
+                "repo_type": "remote",
+                "name": "dark-mcr-remote",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },    
+            {
+                "type": "build",
+                "bin_mgr_id": "unused",
+                "name": "dotnet_lib"
+            },
+            {
+                "type": "build",
+                "bin_mgr_id": "unused",
+                "name": "dotnet_app"
+            }
+        ]
+    },
+    "assigned_policies": [
+        {
+            "name": "global_sec",
+            "type": "security"
+        }
+    ]
+}

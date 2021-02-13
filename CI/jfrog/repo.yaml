@@ -1,40 +1,31 @@
 localRepositories:   
-  dark-dev-nuget-local:
+  dark-nuget-dev-local:
+    type: nuget
+    forceNugetAuthentication: true
+    repoLayout: nuget-default 
+    xray:   
+      enabled: true
+  dark-nuget-rc-local:
     type: nuget
     repoLayout: nuget-default 
-    forceNugetAuthentication: true
     xray:   
       enabled: true
-  dark-rc-nuget-local:
-    type: nuget
-    repoLayout: nuget-default 
-    forceNugetAuthentication: true
-    xray:   
-      enabled: true
-  dark-dev-docker-local:
+  dark-docker-dev-local:
     type: docker
     repoLayout: simple-default 
-    dockerApiVersion: V2
     xray:   
       enabled: true
-  dark-sit-docker-local:
+  dark-docker-release-local:
     type: docker
     repoLayout: simple-default 
-    dockerApiVersion: V2
     xray:   
       enabled: true
-  dark-release-docker-local:
-    type: docker
-    repoLayout: simple-default 
-    dockerApiVersion: V2
-    xray:   
-      enabled: true
-  dark-dev-generic-local:
+  dark-generic-dev-local:
     type: generic
     repoLayout: simple-default 
     xray:   
       enabled: true
-  dark-rc-generic-local:
+  dark-generic-rc-local:
     type: generic
     repoLayout: simple-default 
     xray:   
@@ -42,9 +33,9 @@ localRepositories:
 remoteRepositories: 
   dark-nugetorg-remote:
     type: nuget
-    forceNugetAuthentication: true
     repoLayout: nuget-default 
     url: https://www.nuget.org/
+    forceNugetAuthentication: false
     xray:   
       enabled: true
   dark-dockerhub-remote:
@@ -67,27 +58,26 @@ virtualRepositories:
   dark-nuget:
     type: nuget
     repoLayout: nuget-default 
-    forceNugetAuthentication: false
-    repositories:   
-      - dark-dev-nuget-local
-      - dark-rc-nuget-local
+    forceNugetAuthentication: true
+    repositories:
+      - dark-nuget-dev-local
+      - dark-nuget-rc-local
       - dark-nugetorg-remote
-    defaultDeploymentRepo: dark-dev-nuget-local
+    defaultDeploymentRepo: dark-nuget-dev-local
   dark-docker:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     repositories:   
-      - dark-release-docker-local
-      - dark-sit-docker-local
-      - dark-dev-docker-local
+      - dark-docker-dev-local
+      - dark-docker-release-local
       - dark-dockerhub-remote
       - dark-mcr-remote
-    defaultDeploymentRepo: dark-release-docker-local
+    defaultDeploymentRepo: dark-docker-dev-local
   dark-generic:
     type: generic
     repoLayout: simple-default 
     repositories:   
-      - dark-dev-generic-local
-      - dark-rc-generic-local
-    defaultDeploymentRepo: dark-dev-generic-local
+      - dark-generic-dev-local
+      - dark-generic-rc-local
+    defaultDeploymentRepo: dark-generic-dev-local

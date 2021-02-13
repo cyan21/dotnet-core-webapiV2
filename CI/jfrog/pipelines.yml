@@ -2,6 +2,48 @@ template: true
 valuesFilePath: values.yml  
 
 resources:
+################
+# INIT 
+################
+  - name: {{ .Values.dotnetInitResources.gitRepo.name }}
+    type: GitRepo
+    configuration:
+      gitProvider: {{ .Values.dotnetInitResources.gitRepo.gitProvider }}
+      path: {{ .Values.dotnetInitResources.gitRepo.path }}
+      branches:
+        include:  {{ .Values.dotnetInitResources.gitRepo.branches.include }}
+      files:
+        include: {{ .Values.dotnetInitResources.gitRepo.files.include }}
+      buildOn:
+         commit: false
+
+  - name:  {{ .Values.dotnetInitResources.buildInfo.resourceName }}
+    type: BuildInfo 
+    configuration:
+      sourceArtifactory: {{ .Values.dotnetProject.artifactoryIntegration }}
+      buildName: {{ .Values.dotnetInitResources.buildInfo.name }}
+      buildNumber: ${run_number} 
+
+  - name: {{ .Values.dotnetInitResources.buildInfoPromoted.resourceName }}
+    type: BuildInfo 
+    configuration:
+      sourceArtifactory: {{ .Values.dotnetProject.artifactoryIntegration }}
+      buildName: {{ .Values.dotnetInitResources.buildInfo.name }}
+      buildNumber: ${run_number} 
+
+  - name: {{ .Values.dotnetInitResources.propertyBag.name }}
+    type: PropertyBag
+    configuration:
+      baseImageName: "{{ .Values.dotnetProject.container.registry }}/{{ .Values.dotnetProject.container.name }}"
+      baseImageTag: YYY
+################
+# LIB 
+################
+
+################
+# APP 
+################
+
   - name: {{ .Values.dotnetAppResources.gitRepo.name }}
     type: GitRepo
     configuration:
@@ -32,16 +74,10 @@ resources:
       biNumber: XXX
 
 pipelines:
-  - name: {{ .Values.dotnetProject.pipelineName }}
-    # configuration:
-    #   environmentVariables:
-    #     readOnly:
-    #       envVarDockerRepo: dark-docker
-    #       envVarDockerRegistry: ${envVarDockerRepo}.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
-    #       envVarBaseImageTag: 3.1-jfrog
-    #       envVarNugetRepo: dark-nuget
-    #       envVarGenericRepo: dark-generic
-    #       envVarGenericPromoteRepo: dark-rc-generic-local
+################
+# INIT 
+################
+  - name: {{ .Values.dotnetProject.pipelineNameInit }}
     steps:
       - name: setup_env
         type: Bash
@@ -49,6 +85,168 @@ pipelines:
           affinityGroup: dotnet
           runtime:
             type: host
+        execution:
+          onExecute:
+            - sudo mkdir -p /etc/docker 
+            - > 
+              sudo jq -n  "{\"insecure-registries\": [\"{{ .Values.dotnetProject.container.registry }}\"]}" > /etc/docker/daemon.json
+            - sudo systemctl restart docker
+            - sudo cat /etc/docker/daemon.json
+            - sudo systemctl status docker
+
+      - name: {{ .Values.dotnetInitSteps.dockerBuild.name }}
+        type: DockerBuild
+        configuration:
+          affinityGroup: dotnet
+          dockerFileName: {{ .Values.dotnetInitSteps.dockerBuild.dockerFileName }}
+          dockerFileLocation: {{ .Values.dotnetInitSteps.dockerBuild.dockerFileLocation }}
+          dockerImageName: "{{ .Values.dotnetProject.container.registry }}/{{ .Values.dotnetProject.container.image }}"
+          dockerImageTag: {{ .Values.dotnetProject.container.tag }}
+          inputSteps:
+            - name: setup_env
+          inputResources:
+            - name: {{ .Values.dotnetInitResources.gitRepo.name }}
+          integrations:
+            - name: {{ .Values.dotnetProject.artifactoryIntegration }}
+        execution:
+          onStart:
+            - cd ${res_{{ .Values.dotnetInitResources.gitRepo.name }}_resourcePath}/CI/jfrog
+            - git checkout {{ .Values.dotnetInitResources.gitRepo.branches.include }}
+            - ls -l && chmod +x init.sh
+            - ./init.sh -u  ${int_{{ .Values.dotnetProject.artifactoryIntegration }}_url/%artifactory/} -p ${int_{{ .Values.dotnetProject.artifactoryIntegration }}_apikey} 
+
+      - name: {{ .Values.dotnetInitSteps.dockerPush.name }}
+        type: DockerPush
+        configuration:
+          affinityGroup: dotnet
+          targetRepository: {{ .Values.dotnetProject.container.repoSource }}
+          autoPublishBuildInfo: {{ .Values.dotnetInitSteps.dockerPush.autoPublishBuildInfo }}
+          forceXrayScan: {{ .Values.dotnetInitSteps.dockerPush.forceXrayScan }}
+          inputSteps:
+            - name: {{ .Values.dotnetInitSteps.dockerBuild.name }}
+          integrations:
+            - name: {{ .Values.dotnetProject.artifactoryIntegration }}
+          outputResources:
+            - name: {{ .Values.dotnetInitResources.buildInfo.resourceName }}
+
+      - name: {{ .Values.dotnetInitSteps.promotion.name }}
+        type: PromoteBuild
+        configuration:
+          targetRepository: {{ .Values.dotnetProject.container.repoPromotion1 }}
+          includeDependencies: {{ .Values.dotnetInitSteps.promotion.includeDependencies }}
+          status: {{ .Values.dotnetInitSteps.promotion.status }}
+          comment: {{ .Values.dotnetInitSteps.promotion.comment }}
+          copy: {{ .Values.dotnetInitSteps.promotion.copy }}
+          inputResources:
+            - name: {{ .Values.dotnetInitResources.buildInfo.resourceName }}
+          inputSteps:
+            - name: {{ .Values.dotnetInitSteps.dockerPush.name }}
+          integrations:
+            - name: {{ .Values.dotnetProject.artifactoryIntegration }}
+          outputResources:
+            - name: {{ .Values.dotnetInitResources.buildInfoPromoted.resourceName }}
+            - name: {{ .Values.dotnetInitResources.propertyBag.name }}
+        execution:
+          onSuccess:
+            - write_output {{ .Values.dotnetInitResources.propertyBag.name }} baseImgTag={{ .Values.dotnetProject.container.tag }}
+################
+# LIB 
+################
+  - name: {{ .Values.dotnetProject.pipelineNameDotnetLib }}
+    steps:
+      - name: setup_env
+        type: Bash
+        configuration:
+          affinityGroup: nuget
+          runtime:
+            type: host
+          inputResources:
+            - name: {{ .Values.dotnetInitResources.propertyBag.name }}
+        execution:
+          onExecute:
+            - sudo mkdir -p /etc/docker 
+            - > 
+              sudo jq -n  "{\"insecure-registries\": [\"{{ .Values.dotnetProject.container.registry }}\"]}" > /etc/docker/daemon.json
+            - sudo systemctl restart docker
+            - sudo cat /etc/docker/daemon.json
+            - sudo systemctl status docker
+            - echo ${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
+            - add_run_variables runVarDockerBaseImgTag=${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
+      - name: {{ .Values.dotnetLibSteps.buildNugetLib.name }}
+        type: Bash
+        configuration:
+          environmentVariables:
+            JFROG_CLI_LOG_LEVEL: DEBUG
+          affinityGroup: nuget
+          runtime:
+            type: image
+            image:
+              custom:
+                registry: {{ .Values.dotnetProject.artifactoryIntegration }}
+                name: "{{ .Values.dotnetProject.container.registry }}/{{ .Values.dotnetProject.container.image }}"
+                tag: {{ .Values.dotnetProject.container.tag }}
+                sourceRepository: {{ .Values.dotnetProject.container.repoSource }}
+          inputSteps:
+            - name: setup_env
+          inputResources:
+            - name: {{ .Values.dotnetLibResources.gitRepo.name }}
+          outputResources:
+            - name: {{ .Values.dotnetLibResources.buildInfo.resourceName }}
+          integrations:
+            - name: {{ .Values.dotnetProject.artifactoryIntegration }}
+        execution:
+          onExecute:
+            # below is a string substition : replacing the /artifactory in the integration url by /ui
+            - export JFROG_CLI_BUILD_URL="${int_{{ .Values.dotnetProject.artifactoryIntegration }}_url/%artifactory/ui}/pipelines/myPipelines/lib_nuget/${run_number}/setup_env?branch=${res_src_code_lib_nuget_branchName}"
+            - cd ${res_{{ .Values.dotnetLibResources.gitRepo.name }}_resourcePath} && ls -l
+            - git branch
+            - git checkout ${res_{{ .Values.dotnetLibResources.gitRepo.name }}_branchName}
+            - cat MyLib/greeting/greeting.csproj
+            - appVersion=`sed -n "s/[[:space:]]*<Version>\(.*\)<\/Version>/\1/p" MyLib/greeting/greeting.csproj`
+            - jfrog rt dotnetc --server-id-resolve {{ .Values.dotnetProject.artifactoryIntegration }} --repo-resolve {{ .Values.dotnetProject.nuget.repoSource }}
+            - ls -l .jfrog/projects && cat .jfrog/projects/dotnet.yaml
+            - jfrog rt dotnet build MyLib/greeting -c Release --build-name={{ .Values.dotnetLibResources.buildInfo.name }} --build-number=${run_number} --module=dependencies
+            - jfrog rt u MyLib/greeting/bin/Release/Greeting.${appVersion}.nupkg {{ .Values.dotnetProject.nuget.repoSource }} --build-name={{ .Values.dotnetLibResources.buildInfo.name }} --build-number=${run_number} --module=result
+            - jfrog rt bce {{ .Values.dotnetLibResources.buildInfo.name }} ${run_number}
+            - jfrog rt bp {{ .Values.dotnetLibResources.buildInfo.name }} ${run_number}
+
+      - name: {{ .Values.dotnetLibSteps.xray.name }}
+        type: XrayScan
+        configuration:
+          failOnScan: false
+          inputResources:
+            - name: {{ .Values.dotnetLibResources.buildInfo.resourceName }}
+              trigger: true
+
+      - name: {{ .Values.dotnetLibSteps.promotion.name }}
+        type: PromoteBuild
+        configuration:
+          targetRepository: {{ .Values.dotnetProject.nuget.repoPromotion1 }}
+          includeDependencies: {{ .Values.dotnetLibSteps.promotion.includeDependencies }}
+          status: {{ .Values.dotnetLibSteps.promotion.status }}
+          comment: {{ .Values.dotnetLibSteps.promotion.comment }}
+          copy: {{ .Values.dotnetLibSteps.promotion.copy }}
+          inputSteps:
+            - name: {{ .Values.dotnetLibSteps.xray.name }}
+          inputResources:
+            - name: {{ .Values.dotnetLibResources.buildInfo.resourceName }}
+          outputResources:
+            - name: {{ .Values.dotnetLibResources.propertyBag.name }}
+            - name: {{ .Values.dotnetLibResources.buildInfoPromoted.resourceName }}
+
+################
+# APP 
+################
+  - name: {{ .Values.dotnetProject.pipelineNameDotnetApp }}
+    steps:
+      - name: setup_env
+        type: Bash
+        configuration:
+          affinityGroup: dotnet
+          runtime:
+            type: host
+          inputResources:
+            - name: {{ .Values.dotnetLibResources.propertyBag.name }}
         execution:
           onExecute:
             - sudo mkdir -p /etc/docker 

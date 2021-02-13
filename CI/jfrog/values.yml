@@ -1,5 +1,7 @@
 dotnetProject:
-  pipelineName: dotnet_app
+  pipelineNameInit: dotnet_project_init
+  pipelineNameDotnetLib: dotnet_lib
+  pipelineNameDotnetApp: dotnet_app
   # container image used for the build 
   container:
     registry: dark-docker.artifactory-eu-yannc3-0.soleng-emea-staging.jfrog.team:80
@@ -14,7 +16,67 @@ dotnetProject:
     repoSource: dark-generic 
     repoPromotion1: dark-generic-rc-local    
   artifactoryIntegration: artifactory_eu
-  
+
+dotnetInitResources:
+  gitRepo: 
+    name: src_dockerfile_base_image_dotnet
+    gitProvider: yann_github
+    path: cyan21/dotnet-core-greeting-lib
+    branches:
+      include: demo
+    files:
+      include: CI/jfrog/Dockerfile
+  buildInfo:
+    resourceName: bi_base_image_docker
+    name: dotnet_base_image
+  buildInfoPromoted:
+    resourceName: bi_base_image_docker_promoted
+  propertyBag:
+    name: pb_base_image_dotnet
+
+dotnetInitSteps:
+  dockerBuild:
+    name: build_dotnet_base_image
+    dockerFileName: Dockerfile
+    dockerFileLocation: CI/jfrog/
+  dockerPush:
+    name: publish_dotnet_base_image
+    autoPublishBuildInfo: true
+    forceXrayScan: false
+  promotion:
+    name: promote_dotnet_base_image
+    includeDependencies: false
+    status: "DOCKER_SCAN_OK"
+    comment: "Xray scan passed succesfully"
+    copy: false
+
+dotnetLibResources:
+  gitRepo: 
+    name: src_code_dotnet_lib
+    gitProvider: yann_github
+    path: cyan21/dotnet-core-greeting-lib
+    branches:
+      include: demo
+  buildInfo:
+    resourceName: bi_dotnet_lib
+    name: dotnet_lib
+  buildInfoPromoted:
+    resourceName: bi_dotnet_lib_promoted_staging
+  propertyBag:
+    name: pb_dotnet_lib
+
+dotnetLibSteps:
+  buildNugetLib:
+    name: build_dotnet_lib
+  xray:
+    name: scan_dotnet_lib
+  promotion:
+    name: promote_nuget
+    includeDependencies: true
+    status: XRAY_SCAN_OK
+    comment: "Artifact passed Xray Scan"
+    copy: false
+
 dotnetAppResources:
   gitRepo: 
     name: src_code_dotnet_app
@@ -32,11 +94,11 @@ dotnetAppResources:
 
 dotnetAppSteps:
   buildApp:
-    name: build_app_dotnet
+    name: build_dotnet_app
   xray:
-    name: scan_lib_nuget
+    name: scan_dotnet_lib
   promotion:
-    name: promote_nuget
+    name: promote_dotnet_app
     includeDependencies: true
     status: XRAY_SCAN_OK
     comment: "Artifact passed Xray Scan"

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Greeting</PackageId>
+    <Version>0.0.1</Version>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Company />
+    <Authors>yann chaysinh</Authors>
+    <PackageProjectUrl />
+    <PackageIconUrl />
+    <PackageTags>ych greeting</PackageTags>
+    <Copyright />
+    <Description>My greeting lib</Description>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <NeutralLanguage>en</NeutralLanguage>
+    <RepositoryUrl>https://github.com/cyan21/</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+<!--
+    <PackageReference Include="SampleDependenciesPackage" Version="1.0.0" />
+-->
+    <PackageReference Include="net.sf.mpxj" Version="7.0.0" />
+    <PackageReference Include="TinyMCE" Version="5.0.0" />
+    <PackageReference Include="lodash" Version="4.17.0" />
+    <PackageReference Include="sqlite" Version="3.13.0" />
+    <PackageReference Include="Microsoft.ChakraCore" Version="1.11.19" />
+  </ItemGroup>
+
+</Project>
