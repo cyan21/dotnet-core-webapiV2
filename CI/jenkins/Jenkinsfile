@@ -1,0 +1,133 @@
+pipeline {
+    agent {
+        kubernetes {
+            yaml """\
+            apiVersion: v1
+            kind: Pod
+            metadata:
+              labels:
+                some-label: some-label-value
+            spec:
+              containers:
+              - name: dotnet
+                image: mcr.microsoft.com/dotnet/core/sdk:3.1
+                command:
+                - cat
+                tty: true
+            """.stripIndent()
+        }
+    }
+
+    environment {
+        ARTY_CREDS=credentials('jenkins_rt')
+//        ADM_CREDS=credentials('admin_art')
+        ART_ID="artifactory-eu"
+    }
+
+    parameters {
+        string(name: 'JPD_URL', defaultValue: 'http://artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team', description: '')
+        string(name: 'NUGET_REPO', defaultValue: 'dark-nuget', description: '')
+        string(name: 'PROMOTE_REPO', defaultValue: 'dark-nuget-rc-local', description: '')
+        booleanParam(name: 'FAIL_BUILD', defaultValue: false, description: 'Xray scan')
+    }
+    
+    stages {
+
+        stage ('Clone code') {
+            steps {
+                git branch: 'demo', url: "https://github.com/cyan21/dotnet-core-webapiV2.git"
+            }
+        }
+  
+        stage ('Artifactory configuration') {
+            steps {
+                container('dotnet') {
+                    rtServer (
+                        id: env.ART_ID,
+                        url: "${params.JPD_URL}/artifactory",
+                        credentialsId: 'jenkins_rt'
+                    )
+    
+                    rtDotnetResolver (
+                        id: 'ART_RESOLVER',
+                        serverId: env.ART_ID,
+                        repo: params.NUGET_REPO
+                    )
+    
+                    rtBuildInfo (
+                        captureEnv: true,
+                        excludeEnvPatterns: ['*private*', 'internal-*', 'ADM*'],
+                        // buildName: 'my-build',
+                        // buildNumber: '20'
+                    )
+                    // Xray : reference  build info
+                    // sh "curl -XPOST -u${ADM_CREDS_USR}:${ADM_CREDS_PSW}  -H \"Content-Type: application/json\" -d @payload.json ${JPD_URL}/xray/api/v1/binMgr/builds"
+                }
+            }
+        }
+
+        stage ('Build dotnet library') {
+            steps {
+                
+                container('dotnet') {
+                    sh "dotnet --version"
+                    sh "apt update && apt install -y openjdk-11-jdk-headless"
+                    
+                    rtDotnetRun (
+                        resolverId: "ART_RESOLVER",
+                        args: "build MyLib/ -c Release",
+                        module: 'myDeps'
+                    )
+                }
+            }
+        }
+
+        stage ('Upload artifact & publish build info') {
+            steps {
+                rtUpload (
+                    serverId: env.ART_ID,
+                    module: 'mylib',
+                    spec:
+                        """{
+                            "files": [
+                                {
+                                    "pattern": "${env.WORKSPACE}/MyLib/greeting/bin/Release/Greeting.*.nupkg",
+                                    "target": "${params.NUGET_REPO}/jenkins/"
+                                }
+                            ]
+                        }"""
+                )
+
+                rtPublishBuildInfo (
+                    serverId: env.ART_ID
+                )
+            }
+        }
+
+        stage ('Xray scan') {
+            steps {
+                xrayScan (
+                    serverId: env.ART_ID,
+                    failBuild: params.FAIL_BUILD
+                )
+            }
+        }
+      
+        stage ('Promotion') {
+            steps {
+                rtPromote (
+                    //Mandatory parameter
+                    serverId: env.ART_ID,
+                    targetRepo: params.PROMOTE_REPO,
+
+                    //Optional parameters
+                    comment: 'passed Xray scan',
+                    status: 'XRAY_OK',
+                    includeDependencies: false,
+                    failFast: true,
+                    copy: false
+                )
+            }
+        }
+    }
+}
