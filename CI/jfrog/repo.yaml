@@ -1,45 +1,45 @@
 localRepositories:   
-  dark-nuget-dev-local:
+  vns-nuget-dev-local:
     type: nuget
     forceNugetAuthentication: true
     repoLayout: nuget-default 
     xray:   
       enabled: true
-  dark-nuget-rc-local:
+  vns-nuget-rc-local:
     type: nuget
     forceNugetAuthentication: true
     repoLayout: nuget-default 
     xray:   
       enabled: true
-  dark-docker-dev-local:
+  vns-docker-dev-local:
     type: docker
     repoLayout: simple-default 
     xray:   
       enabled: true
-  dark-docker-release-local:
+  vns-docker-release-local:
     type: docker
     repoLayout: simple-default 
     xray:   
       enabled: true
-  dark-generic-dev-local:
+  vns-generic-dev-local:
     type: generic
     repoLayout: simple-default 
     xray:   
       enabled: true
-  dark-generic-rc-local:
+  vns-generic-rc-local:
     type: generic
     repoLayout: simple-default 
     xray:   
       enabled: true
 remoteRepositories: 
-  dark-nugetorg-remote:
+  vns-nugetorg-remote:
     type: nuget
     repoLayout: nuget-default 
     url: https://www.nuget.org/
     forceNugetAuthentication: true
     xray:   
       enabled: true
-  dark-dockerhub-remote:
+  vns-dockerhub-remote:
     type: docker 
     url: https://registry-1.docker.io/
     dockerApiVersion: V2
@@ -47,7 +47,7 @@ remoteRepositories:
     enableTokenAuthentication: true
     xray:   
       enabled: true
-  dark-mcr-remote:
+  vns-mcr-remote:
     type: docker 
     url: https://mcr.microsoft.com/
     dockerApiVersion: V2
@@ -56,29 +56,29 @@ remoteRepositories:
     xray:   
       enabled: true
 virtualRepositories: 
-  dark-nuget:
+  vns-nuget:
     type: nuget
     repoLayout: nuget-default 
     forceNugetAuthentication: true
     repositories:
-      - dark-nuget-dev-local
-      - dark-nuget-rc-local
-      - dark-nugetorg-remote
-    defaultDeploymentRepo: dark-nuget-dev-local
-  dark-docker:
+      - vns-nuget-dev-local
+      - vns-nuget-rc-local
+      - vns-nugetorg-remote
+    defaultDeploymentRepo: vns-nuget-dev-local
+  vns-docker:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     repositories:   
-      - dark-docker-dev-local
-      - dark-docker-release-local
-      - dark-dockerhub-remote
-      - dark-mcr-remote
-    defaultDeploymentRepo: dark-docker-dev-local
-  dark-generic:
+      - vns-docker-dev-local
+      - vns-docker-release-local
+      - vns-dockerhub-remote
+      - vns-mcr-remote
+    defaultDeploymentRepo: vns-docker-dev-local
+  vns-generic:
     type: generic
     repoLayout: simple-default 
     repositories:   
-      - dark-generic-dev-local
-      - dark-generic-rc-local
-    defaultDeploymentRepo: dark-generic-dev-local
+      - vns-generic-dev-local
+      - vns-generic-rc-local
+    defaultDeploymentRepo: vns-generic-dev-local

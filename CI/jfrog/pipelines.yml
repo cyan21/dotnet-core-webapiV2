@@ -107,21 +107,6 @@ pipelines:
 ################
   - name: {{ .Values.dotnetProject.pipelineNameInit }}
     steps:
-      - name: setup_env
-        type: Bash
-        configuration:
-          affinityGroup: dotnet
-          runtime:
-            type: host
-        execution:
-          onExecute:
-            - sudo mkdir -p /etc/docker 
-            - > 
-              sudo jq -n  "{\"insecure-registries\": [\"{{ .Values.dotnetProject.container.registry }}\"]}" > /etc/docker/daemon.json
-            - sudo systemctl restart docker
-            - sudo cat /etc/docker/daemon.json
-            - sudo systemctl status docker
-
       - name: {{ .Values.dotnetInitSteps.dockerBuild.name }}
         type: DockerBuild
         configuration:

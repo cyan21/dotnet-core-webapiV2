@@ -1,6 +1,6 @@
 {
     "general_data": {
-        "name": "dark",
+        "name": "venus",
         "description": "This is a new watch created using API V2",
         "active": true
     },
@@ -8,7 +8,7 @@
         "resources": [
             {
                 "type": "repository",
-                "name": "dark-nuget-dev-local",
+                "name": "vns-nuget-dev-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -19,7 +19,7 @@
             },
             {
                 "type": "repository",
-                "name": "dark-nuget-rc-local",
+                "name": "vns-nuget-rc-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -30,19 +30,7 @@
             },
             {
                 "type": "repository",
-                "name": "dark-docker-release-local",
-                "bin_mgr_id": "unused",
-                "filters": [
-                    {
-                        "type": "regex",
-                        "value": ".*"
-                    }
-                ]
-            },
-            {
-                "type": "repository",
-                "repo_type": "remote",
-                "name": "dark-nugetorg-remote",
+                "name": "vns-docker-release-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -54,7 +42,19 @@
             {
                 "type": "repository",
                 "repo_type": "remote",
-                "name": "dark-dockerhub-remote",
+                "name": "vns-nugetorg-remote",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "repo_type": "remote",
+                "name": "vns-dockerhub-remote",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -66,7 +66,7 @@
             {
                 "type": "repository",
                 "repo_type": "remote",
-                "name": "dark-mcr-remote",
+                "name": "vns-mcr-remote",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {

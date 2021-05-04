@@ -4,17 +4,17 @@ dotnetProject:
   pipelineNameDotnetApp: dotnet_app
   # container image used for the build 
   container:
-    registry: dark-docker.artifactory-eu-yannc4-0.soleng-emea-staging.jfrog.team:80
+    registry: platform-us.staging.gcp.devopsacc.team/vns-docker
     image: dotnet/core/sdk
     tag: 3.1-jfrog
-    repoSource: dark-docker
-    repoPromotion1: dark-docker-release-local
+    repoSource: vns-docker
+    repoPromotion1: vns-docker-release-local
   nuget:
-    repoSource: dark-nuget #dark-nugetorg-remote
-    repoPromotion1: dark-nuget-rc-local
+    repoSource: vns-nuget #vns-nugetorg-remote
+    repoPromotion1: vns-nuget-rc-local
   generic:
-    repoSource: dark-generic 
-    repoPromotion1: dark-generic-rc-local    
+    repoSource: vns-generic 
+    repoPromotion1: vns-generic-rc-local    
   artifactoryIntegration: artifactory_eu
 
 dotnetInitResources:
@@ -23,7 +23,7 @@ dotnetInitResources:
     gitProvider: yann_github
     path: cyan21/dotnet-core-webapiV2
     branches:
-      include: master
+      include: soleng-stg
     files:
       include: CI/jfrog/Dockerfile
   buildInfo:
@@ -56,9 +56,9 @@ dotnetLibResources:
     gitProvider: yann_github
     path: cyan21/dotnet-core-webapiV2
     branches:
-      include: master
-    files:
-      include:
+      include: soleng-stg
+    # files:
+    #   include:
   buildInfo:
     resourceName: bi_dotnet_lib
     name: dotnet_lib
@@ -85,7 +85,7 @@ dotnetAppResources:
     gitProvider: yann_github
     path: cyan21/dotnet-core-webapiV2
     branches:
-      include: master
+      include: soleng-stg
   buildInfo:
     resourceName: bi_dotnet_app
     name: dotnet_app
