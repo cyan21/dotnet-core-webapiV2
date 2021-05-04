@@ -8,7 +8,7 @@ usage() {
 }
 
 JPD_URL="https://platform-us.staging.gcp.devopsacc.team"
-ADMIN_USER="admin"
+ADMIN_USER="toto"
 BUILD_NAMES="dotnet_lib,dotnet_app"  #list with comma as a separator
 
 while getopts "u:l:p:" option; do
