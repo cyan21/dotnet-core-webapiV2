@@ -115,8 +115,6 @@ pipelines:
           dockerFileLocation: {{ .Values.dotnetInitSteps.dockerBuild.dockerFileLocation }}
           dockerImageName: "{{ .Values.dotnetProject.container.registry }}/{{ .Values.dotnetProject.container.image }}"
           dockerImageTag: {{ .Values.dotnetProject.container.tag }}
-          inputSteps:
-            - name: setup_env
           inputResources:
             - name: {{ .Values.dotnetInitResources.gitRepo.name }}
           integrations:
