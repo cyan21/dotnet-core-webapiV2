@@ -166,18 +166,6 @@ pipelines:
 ################
   - name: {{ .Values.dotnetProject.pipelineNameDotnetLib }}
     steps:
-      # - name: setup_env
-      #   type: Bash
-      #   configuration:
-      #     affinityGroup: nuget
-      #     runtime:
-      #       type: host
-      #     inputResources:
-      #       - name: {{ .Values.dotnetInitResources.propertyBag.name }}
-      #   execution:
-      #     onExecute:
-      #       - echo ${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
-      #       - add_run_variables runVarDockerBaseImgTag=${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
       - name: {{ .Values.dotnetLibSteps.buildNugetLib.name }}
         type: Bash
         configuration:
@@ -255,19 +243,6 @@ pipelines:
 ################
   - name: {{ .Values.dotnetProject.pipelineNameDotnetApp }}
     steps:
-      # - name: setup_env
-      #   type: Bash
-      #   configuration:
-      #     affinityGroup: dotnet
-      #     runtime:
-      #       type: host
-      #     inputResources:
-      #       - name: {{ .Values.dotnetLibResources.propertyBag.name }}
-      #   execution:
-      #     onExecute:
-      #       - echo ${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
-      #       - add_run_variables runVarLibVersion=${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
-
       - name: {{ .Values.dotnetAppSteps.buildApp.name }}
         type: Bash
         configuration:
@@ -281,8 +256,6 @@ pipelines:
                 # tag: {{ .Values.dotnetProject.container.tag }}
                 tag: "${res_{{ .Values.dotnetLibResources.propertyBag.name }}_dockerBaseImgTag}"
                 sourceRepository: {{ .Values.dotnetProject.container.repoSource }}
-          # inputSteps:
-          #   - name: setup_env
           inputResources:
             - name: {{ .Values.dotnetAppResources.gitRepo.name }}
             - name: {{ .Values.dotnetLibResources.propertyBag.name }}
