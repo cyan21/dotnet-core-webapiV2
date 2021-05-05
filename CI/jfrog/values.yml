@@ -6,7 +6,7 @@ dotnetProject:
   container:
     registry: platform-us.staging.gcp.devopsacc.team/vns-docker
     image: dotnet/core/sdk
-    tag: 3.1-jfrog
+    tag: 5.0-jfrog
     repoSource: vns-docker
     repoPromotion1: vns-docker-release-local
   nuget:

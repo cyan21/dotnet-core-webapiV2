@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1
+FROM platform-us.staging.gcp.devopsacc.team/vns-docker/mcr.microsoft.com/dotnet/core/sdk:5.0
 LABEL maintainer="yannc@jfrog.com"
 
 ARG ARTY_URL
