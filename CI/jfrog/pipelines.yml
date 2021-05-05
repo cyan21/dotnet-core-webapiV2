@@ -192,8 +192,8 @@ pipelines:
                 # tag: {{ .Values.dotnetProject.container.tag }}
                 tag: "${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}"
                 sourceRepository: {{ .Values.dotnetProject.container.repoSource }}
-          inputSteps:
-            - name: setup_env
+          # inputSteps:
+          #   - name: setup_env
           inputResources:
             - name: {{ .Values.dotnetLibResources.gitRepo.name }}
             - name: {{ .Values.dotnetInitResources.propertyBag.name }}
