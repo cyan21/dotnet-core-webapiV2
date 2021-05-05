@@ -16,6 +16,8 @@ dotnetProject:
     repoSource: vns-generic 
     repoPromotion1: vns-generic-rc-local    
   artifactoryIntegration: artifactory_eu
+  # to authenticate when building the image "FROM" in the dockerfile
+  dockerIntegration: vns_docker_registry
 
 dotnetInitResources:
   gitRepo: 

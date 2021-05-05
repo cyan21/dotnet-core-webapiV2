@@ -119,6 +119,7 @@ pipelines:
             - name: {{ .Values.dotnetInitResources.gitRepo.name }}
           integrations:
             - name: {{ .Values.dotnetProject.artifactoryIntegration }}
+            - name: {{ .Values.dotnetProject.dockerIntegration }}
         execution:
           onStart:
             - cd ${res_{{ .Values.dotnetInitResources.gitRepo.name }}_resourcePath}/CI/jfrog
