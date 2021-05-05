@@ -1,14 +1,14 @@
-FROM platform-us.staging.gcp.devopsacc.team/vns-docker/mcr.microsoft.com/dotnet/core/sdk:5.0
+FROM platform-us.staging.gcp.devopsacc.team/vns-docker/dotnet/core/sdk:3.1
 LABEL maintainer="yannc@jfrog.com"
 
-ARG ARTY_URL
-ARG ARTY_USER
-ARG ARTY_APIKEY
+# ARG ARTY_URL
+# ARG ARTY_USER
+# ARG ARTY_APIKEY
 
-ENV ART_REPO=$ARTY_MAIN_REPO
-ENV URL=$ARTY_URL
-ENV ARTY_ID='art'
-ENV JFROG_CLI_OFFER_CONFIG=false
+# ENV ART_REPO=$ARTY_MAIN_REPO
+# ENV URL=$ARTY_URL
+# ENV ARTY_ID='art'
+# ENV JFROG_CLI_OFFER_CONFIG=false
 
 
 WORKDIR /tmp
