@@ -165,18 +165,18 @@ pipelines:
 ################
   - name: {{ .Values.dotnetProject.pipelineNameDotnetLib }}
     steps:
-      - name: setup_env
-        type: Bash
-        configuration:
-          affinityGroup: nuget
-          runtime:
-            type: host
-          inputResources:
-            - name: {{ .Values.dotnetInitResources.propertyBag.name }}
-        execution:
-          onExecute:
-            - echo ${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
-            - add_run_variables runVarDockerBaseImgTag=${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
+      # - name: setup_env
+      #   type: Bash
+      #   configuration:
+      #     affinityGroup: nuget
+      #     runtime:
+      #       type: host
+      #     inputResources:
+      #       - name: {{ .Values.dotnetInitResources.propertyBag.name }}
+      #   execution:
+      #     onExecute:
+      #       - echo ${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
+      #       - add_run_variables runVarDockerBaseImgTag=${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
       - name: {{ .Values.dotnetLibSteps.buildNugetLib.name }}
         type: Bash
         configuration:
@@ -189,12 +189,14 @@ pipelines:
               custom:
                 registry: {{ .Values.dotnetProject.artifactoryIntegration }}
                 name: "{{ .Values.dotnetProject.container.registry }}/{{ .Values.dotnetProject.container.image }}"
-                tag: {{ .Values.dotnetProject.container.tag }}
+                # tag: {{ .Values.dotnetProject.container.tag }}
+                tag: "${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}"
                 sourceRepository: {{ .Values.dotnetProject.container.repoSource }}
           inputSteps:
             - name: setup_env
           inputResources:
             - name: {{ .Values.dotnetLibResources.gitRepo.name }}
+            - name: {{ .Values.dotnetInitResources.propertyBag.name }}
           outputResources:
             - name: {{ .Values.dotnetLibResources.buildInfo.resourceName }}
           integrations:

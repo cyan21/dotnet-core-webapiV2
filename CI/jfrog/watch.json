@@ -89,7 +89,7 @@
     },
     "assigned_policies": [
         {
-            "name": "global_sec",
+            "name": "production",
             "type": "security"
         }
     ]
