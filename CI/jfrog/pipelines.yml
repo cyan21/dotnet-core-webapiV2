@@ -216,6 +216,9 @@ pipelines:
             - jfrog rt u MyLib/greeting/bin/Release/Greeting.${appVersion}.nupkg {{ .Values.dotnetProject.nuget.repoSource }} --build-name={{ .Values.dotnetLibResources.buildInfo.name }} --build-number=${run_number} --module=result
             - jfrog rt bce {{ .Values.dotnetLibResources.buildInfo.name }} ${run_number}
             - jfrog rt bp {{ .Values.dotnetLibResources.buildInfo.name }} ${run_number}
+          onSuccess:
+            - echo ${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
+            - add_run_variables runVarDockerBaseImgTag=${res_{{ .Values.dotnetInitResources.propertyBag.name }}_baseImgTag}
             - add_run_variables runVarlibVersion=${appVersion}
 
       - name: {{ .Values.dotnetLibSteps.xray.name }}
@@ -244,24 +247,25 @@ pipelines:
         execution:
           onSuccess:
             - write_output {{ .Values.dotnetLibResources.propertyBag.name }} libVersion=${runVarlibVersion}
+            - write_output {{ .Values.dotnetLibResources.propertyBag.name }} dockerBaseImgTag=${runVarDockerBaseImgTag}
 
 ################
 # APP 
 ################
   - name: {{ .Values.dotnetProject.pipelineNameDotnetApp }}
     steps:
-      - name: setup_env
-        type: Bash
-        configuration:
-          affinityGroup: dotnet
-          runtime:
-            type: host
-          inputResources:
-            - name: {{ .Values.dotnetLibResources.propertyBag.name }}
-        execution:
-          onExecute:
-            - echo ${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
-            - add_run_variables runVarLibVersion=${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
+      # - name: setup_env
+      #   type: Bash
+      #   configuration:
+      #     affinityGroup: dotnet
+      #     runtime:
+      #       type: host
+      #     inputResources:
+      #       - name: {{ .Values.dotnetLibResources.propertyBag.name }}
+      #   execution:
+      #     onExecute:
+      #       - echo ${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
+      #       - add_run_variables runVarLibVersion=${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
 
       - name: {{ .Values.dotnetAppSteps.buildApp.name }}
         type: Bash
@@ -273,18 +277,24 @@ pipelines:
               custom:
                 registry: {{ .Values.dotnetProject.artifactoryIntegration }}
                 name: "{{ .Values.dotnetProject.container.registry }}/{{ .Values.dotnetProject.container.image }}"
-                tag: {{ .Values.dotnetProject.container.tag }}
+                # tag: {{ .Values.dotnetProject.container.tag }}
+                tag: "${res_{{ .Values.dotnetLibResources.propertyBag.name }}_dockerBaseImgTag}"
                 sourceRepository: {{ .Values.dotnetProject.container.repoSource }}
-          inputSteps:
-            - name: setup_env
+          # inputSteps:
+          #   - name: setup_env
           inputResources:
             - name: {{ .Values.dotnetAppResources.gitRepo.name }}
+            - name: {{ .Values.dotnetLibResources.propertyBag.name }}
           outputResources:
             - name: {{ .Values.dotnetAppResources.buildInfo.resourceName }}
           integrations:
             - name: {{ .Values.dotnetProject.artifactoryIntegration }}
         execution:
           onStart:
+            - newLibVersion=${res_{{ .Values.dotnetLibResources.propertyBag.name }}_libVersion}
+            - echo "NewLibVersion = $newLibVersion"
+            - echo "NewDockerTag = ${res_{{ .Values.dotnetLibResources.propertyBag.name }}_dockerBaseImgTag}"
+          onExecute:
             # below is a string substition : replacing the /artifactory in the integration url by /uiÒ
             - export JFROG_CLI_BUILD_URL="${int_{{ .Values.dotnetProject.artifactoryIntegration }}_url/%artifactory/ui}/pipelines/myPipelines/app_dotnet/${run_number}/setup_env?branch=${res_{{ .Values.dotnetAppResources.gitRepo.name }}_branchName}"
             - cd ${res_{{ .Values.dotnetAppResources.gitRepo.name }}_resourcePath} && ls -l
@@ -294,8 +304,8 @@ pipelines:
             - dotnet nuget locals all --clear
             - cat MyWebAPI/MyWebAPI.csproj
             # bump lib version
-            - sed "s/Greeting\" Version=\"[0-9.]*\"/Greeting\" Version=\"${runVarLibVersion}\"/" MyWebAPI/MyWebAPI.csproj
-            - sed -i "s/Greeting\" Version=\"[0-9.]*\"/Greeting\" Version=\"${runVarLibVersion}\"/" MyWebAPI/MyWebAPI.csproj
+            - sed "s/Greeting\" Version=\"[0-9.]*\"/Greeting\" Version=\"${newLibVersion}\"/" MyWebAPI/MyWebAPI.csproj
+            - sed -i "s/Greeting\" Version=\"[0-9.]*\"/Greeting\" Version=\"${newLibVersion}\"/" MyWebAPI/MyWebAPI.csproj
             - cat MyWebAPI/MyWebAPI.csproj
             - appVersion=`sed -n "s/[[:space:]]*<Version>\(.*\)<\/Version>/\1/p" MyWebAPI/MyWebAPI.csproj`
             - echo $appVersion
