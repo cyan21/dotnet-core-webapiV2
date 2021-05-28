@@ -19,6 +19,11 @@ namespace Greeting
             return "Konnichiwa";
         }
 
+        public string de()
+        {
+            return "Guten Tag";
+        }
+
         public static void Main()
         {
             Greetings g = new Greetings();
