@@ -15,7 +15,9 @@ resources:
       files:
         include: {{ .Values.dotnetInitResources.gitRepo.files.include }}
       buildOn:
-         commit: false
+         commit: true
+         pullRequestCreate: true
+         pullRequestClose: true
 
   - name:  {{ .Values.dotnetInitResources.buildInfo.resourceName }}
     type: BuildInfo 
