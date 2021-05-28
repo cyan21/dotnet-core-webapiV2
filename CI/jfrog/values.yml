@@ -25,12 +25,12 @@ dotnetInitResources:
     gitProvider: yann_github
     path: cyan21/dotnet-core-webapiV2
     branches:
-      include: soleng-stg
+      include: {{ gitBranch }}
     files:
       include: CI/jfrog/Dockerfile
   buildInfo:
     resourceName: bi_base_image_docker
-    name: dotnet_base_image
+    name: {{ gitBranch }} dotnet_base_image
   buildInfoPromoted:
     resourceName: bi_base_image_docker_promoted
   propertyBag:
@@ -58,12 +58,12 @@ dotnetLibResources:
     gitProvider: yann_github
     path: cyan21/dotnet-core-webapiV2
     branches:
-      include: soleng-stg
+      include: {{ gitBranch }}
     # files:
     #   include:
   buildInfo:
     resourceName: bi_dotnet_lib
-    name: dotnet_lib
+    name: {{ gitBranch }}_dotnet_lib
   buildInfoPromoted:
     resourceName: bi_dotnet_lib_promoted_staging
   propertyBag:
@@ -87,10 +87,10 @@ dotnetAppResources:
     gitProvider: yann_github
     path: cyan21/dotnet-core-webapiV2
     branches:
-      include: soleng-stg
+      include: {{ gitBranch }}
   buildInfo:
     resourceName: bi_dotnet_app
-    name: dotnet_app
+    name: {{ gitBranch }}_dotnet_app
   buildInfoPromoted:
     resourceName: bi_dotnet_app_promoted
   propertyBag:
