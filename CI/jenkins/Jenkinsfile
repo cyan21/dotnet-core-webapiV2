@@ -62,7 +62,7 @@ pipeline {
 
         booleanParam(name: 'DOTNET_BUILD_DEP', defaultValue: false, description: 'Build dependency')
         booleanParam(name: 'DOTNET_BUILD_APP', defaultValue: false, description: 'Build app')
-        booleanParam(name: 'DOCKER_BUILD', defaultValue: true, description: 'Build docker')
+        booleanParam(name: 'DOCKER_BUILD', defaultValue: false, description: 'Build docker')
 
     }
     
