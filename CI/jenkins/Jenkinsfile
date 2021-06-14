@@ -144,9 +144,8 @@ pipeline {
                         buildNumber: env.BUILD_NUMBER
                     )
 
-                    sh """
-                        echo ${env.MY_BUILD_NAME}
-                        if [ ${params.INDEX_BUILD} == "true" ]; then
+                    sh """#!/bin/bash
+                        if [[ ${params.INDEX_BUILD} == "true" ]]; then
                             curl \
                                 -XPOST \
                                 -u ${ADM_USER}:${ADM_PASS} \
@@ -177,7 +176,7 @@ pipeline {
 
                 sh """
                     # ugly workaround to see the scan result in the UI
-                    if [ ${params.INDEX_BUILD} == "true" ]; then
+                    if [[ ${params.INDEX_BUILD} == "true" ]]; then
                         curl \
                             -XPOST \
                             -u ${ADM_USER}:${ADM_PASS} \
@@ -271,7 +270,7 @@ pipeline {
                     )
 
                     sh """
-                        if [ ${params.INDEX_BUILD} == "true" ]; then
+                        if [[ ${params.INDEX_BUILD} == "true" ]]; then
                             curl \
                                 -XPOST \
                                 -u ${ADM_USER}:${ADM_PASS} \
@@ -302,7 +301,7 @@ pipeline {
                 )
                 sh """
                     # ugly workaround to see the scan result in the UI
-                    if [ ${params.INDEX_BUILD} == "true" ]; then
+                    if [[ ${params.INDEX_BUILD} == "true" ]]; then
                         curl \
                             -XPOST \
                             -u ${ADM_USER}:${ADM_PASS} \
