@@ -376,14 +376,14 @@ pipeline {
                         buildName: env.DOCKER_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
-                    
+
                     rtDownload (
                         serverId: env.ART_ID,
                         spec: """{
                               "files": [
                                 {
                                   \"pattern": \"${params.GENERIC_REPO}/webapi-${params.NEW_VERSION_APP}.tar.gz\",
-                                  \"target": \"out/webapi.tar.gz\"                                  
+                                  \"target": \"webapi.tar.gz\"                                  
                                 }
                               ]
                         }""",
@@ -395,6 +395,7 @@ pipeline {
                     
                     sh """
                         ls -l
+                        mkdir out
                         docker images
                         apk add curl openjdk11
                         git_path=`echo ${params.MY_GIT_URL} | cut -d/ -f4,5`
@@ -450,7 +451,7 @@ pipeline {
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
                 )
-                sh """
+                sh """#!/bin/bash
                     # ugly workaround to see the scan result in the UI
                     if [ ${params.INDEX_BUILD} == "true" ]; then
                         curl \
