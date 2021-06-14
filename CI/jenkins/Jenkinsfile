@@ -383,9 +383,7 @@ pipeline {
                               "files": [
                                 {
                                   \"pattern": \"${params.GENERIC_REPO}/webapi-${params.NEW_VERSION_APP}.tar.gz\",
-                                  \"target": \"out/webapi.tar.gz\",
-                                  \"flat\": \"true\"
-                                  
+                                  \"target": \"out/webapi.tar.gz\"                                  
                                 }
                               ]
                         }""",
@@ -395,7 +393,7 @@ pipeline {
                         buildNumber: env.BUILD_NUMBER
                     )
                     
-                    sh """#!/bin/sh
+                    sh """#!/bin/bash
                         ls -l
                         docker images
                         apk add curl openjdk11
