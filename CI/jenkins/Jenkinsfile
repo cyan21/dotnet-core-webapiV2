@@ -151,7 +151,7 @@ pipeline {
                                 -XPOST \
                                 -u ${ADM_USER}:${ADM_PASS} \
                                 -H "Content-Type: application/json" \
-                                -d '{"names":["'${env.MY_BUILD_NAME}'"]}' \
+                                -d '{"names":["'${env.LIB_BUILD_NAME}'"]}' \
                             https://${params.JPD_URL}/xray/api/v1/binMgr/builds
                         else
                             echo "No indexing"
@@ -269,6 +269,19 @@ pipeline {
                         buildName: env.APP_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
+
+                    sh """
+                        if [ ${params.INDEX_BUILD} == "true" ]; then
+                            curl \
+                                -XPOST \
+                                -u ${ADM_USER}:${ADM_PASS} \
+                                -H "Content-Type: application/json" \
+                                -d '{"names":["'${env.APP_BUILD_NAME}'"]}' \
+                            https://${params.JPD_URL}/xray/api/v1/binMgr/builds
+                        else
+                            echo "No indexing"
+                        fi
+                    """
                 } // end container
             } // end step
         } // end stage
@@ -411,7 +424,20 @@ pipeline {
                         buildName: env.DOCKER_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
-
+                    
+                    sh """
+                        echo ${env.MY_BUILD_NAME}
+                        if [ ${params.INDEX_BUILD} == "true" ]; then
+                            curl \
+                                -XPOST \
+                                -u ${ADM_USER}:${ADM_PASS} \
+                                -H "Content-Type: application/json" \
+                                -d '{"names":["'${env.DOCKER_BUILD_NAME}'"]}' \
+                            https://${params.JPD_URL}/xray/api/v1/binMgr/builds
+                        else
+                            echo "No indexing"
+                        fi
+                    """
                 }
             } // end steps
         } // end stage
@@ -428,7 +454,20 @@ pipeline {
                     buildName: env.DOCKER_BUILD_NAME,
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
-                )   
+                )
+                sh """
+                    # ugly workaround to see the scan result in the UI
+                    if [ ${params.INDEX_BUILD} == "true" ]; then
+                        curl \
+                            -XPOST \
+                            -u ${ADM_USER}:${ADM_PASS} \
+                            -H "Content-Type: application/json" \
+                            -d '{"buildName": "'${env.DOCKER_BUILD_NAME}'", "buildNumber": "'${env.BUILD_NUMBER}'" }' \
+                        https://${params.JPD_URL}/xray/api/v1/scanBuild
+                    else
+                        echo "No indexing"
+                    fi
+                """
             }
         }
         
