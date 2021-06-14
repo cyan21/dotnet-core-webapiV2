@@ -63,7 +63,10 @@ pipeline {
         booleanParam(name: 'DOTNET_BUILD_DEP', defaultValue: false, description: 'Build dependency')
         booleanParam(name: 'DOTNET_BUILD_APP', defaultValue: false, description: 'Build app')
         booleanParam(name: 'DOCKER_BUILD', defaultValue: false, description: 'Build docker')
+        booleanParam(name: 'INDEX_BUILD', defaultValue: false, description: 'Should be used ONLY for the 1st run for XRAY to index a build ')
 
+        string(name: 'ADM_USER', defaultValue: '', description: 'Only used if INDEX_BUILD is ticked')
+        string(name: 'ADM_PASS', defaultValue: '', description: 'Only used if INDEX_BUILD is ticked')
     }
     
     stages {
@@ -98,8 +101,6 @@ pipeline {
                         buildName: env.LIB_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
-                    // Xray : reference  build info
-                    // sh "curl -XPOST -u${ADM_CREDS_USR}:${ADM_CREDS_PSW}  -H \"Content-Type: application/json\" -d @payload.json ${JPD_URL}/xray/api/v1/binMgr/builds"
 
                     sh """
                         ls -l 
@@ -142,6 +143,20 @@ pipeline {
                         buildName: env.LIB_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
+
+                    sh """
+                        echo ${env.MY_BUILD_NAME}
+                        if [ ${params.INDEX_BUILD} == "true" ]; then
+                            curl \
+                                -XPOST \
+                                -u ${ADM_USER}:${ADM_PASS} \
+                                -H "Content-Type: application/json" \
+                                -d '{"names":["'${env.MY_BUILD_NAME}'"]}' \
+                            https://${params.JPD_URL}/xray/api/v1/binMgr/builds
+                        else
+                            echo "No indexing"
+                        fi 
+                    """
                 } // end container
             } // end step
         } // end stage
@@ -159,6 +174,20 @@ pipeline {
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
                 )
+
+                sh """
+                    # ugly workaround to see the scan result in the UI
+                    if [ ${params.INDEX_BUILD} == "true" ]; then
+                        curl \
+                            -XPOST \
+                            -u ${ADM_USER}:${ADM_PASS} \
+                            -H "Content-Type: application/json" \
+                            -d '{"buildName": "'${env.LIB_BUILD_NAME}'", "buildNumber": "'${env.BUILD_NUMBER}'" }' \
+                        https://${params.JPD_URL}/xray/api/v1/scanBuild
+                    else
+                        echo "No indexing"
+                    fi
+                """
             }
         }
 
@@ -251,12 +280,26 @@ pipeline {
                 }
             }
             steps {
+
                 xrayScan (
                     serverId: env.ART_ID,
                     buildName: env.APP_BUILD_NAME,
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
                 )
+                sh """
+                    # ugly workaround to see the scan result in the UI
+                    if [ ${params.INDEX_BUILD} == "true" ]; then
+                        curl \
+                            -XPOST \
+                            -u ${ADM_USER}:${ADM_PASS} \
+                            -H "Content-Type: application/json" \
+                            -d '{"buildName": "'${env.APP_BUILD_NAME}'", "buildNumber": "'${env.BUILD_NUMBER}'" }' \
+                        https://${params.JPD_URL}/xray/api/v1/scanBuild
+                    else
+                        echo "No indexing"
+                    fi
+                """
             }
         }
         
@@ -293,7 +336,8 @@ pipeline {
                     status: 'XRAY_OK',
                     includeDependencies: false,
                     failFast: true,
-                    copy: false
+                    copy: false,
+                    failFast: false
                 )
             }
         } // end stage
@@ -405,7 +449,8 @@ pipeline {
                     comment: 'Xray scan passed',
                     status: 'VULN_SCAN_OK',
                     includeDependencies: false,
-                    copy: false
+                    copy: false,
+                    failFast: false
                 )               
             }
         } // en stage
