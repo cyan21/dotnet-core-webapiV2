@@ -239,7 +239,7 @@ pipeline {
                         buildNumber: env.BUILD_NUMBER
                     )
 
-                    sh"""#!/bin/sh
+                    sh"""#!/bin/bash
                         ls -l
                         mv MyWebAPI/bin/Release/netcoreapp3.1/MyWebAPI.dll out/
                         ls -l out
