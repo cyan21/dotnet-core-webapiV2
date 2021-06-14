@@ -423,7 +423,7 @@ pipeline {
                         buildNumber: env.BUILD_NUMBER
                     )
 
-                    sh """#!/bin/bash
+                    sh """
                         if [ ${params.INDEX_BUILD} == "true" ]; then
                             curl \
                                 -XPOST \
@@ -452,7 +452,7 @@ pipeline {
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
                 )
-                sh """#!/bin/bash
+                sh """
                     # ugly workaround to see the scan result in the UI
                     if [ ${params.INDEX_BUILD} == "true" ]; then
                         curl \
