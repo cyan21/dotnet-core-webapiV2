@@ -395,6 +395,7 @@ pipeline {
                     
                     sh """
                         ls -l
+                        rm -rf out
                         mkdir out
                         docker images
                         apk add curl openjdk11
