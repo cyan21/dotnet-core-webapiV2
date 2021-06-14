@@ -145,7 +145,7 @@ pipeline {
                     )
 
                     sh """#!/bin/bash
-                        if [[ ${params.INDEX_BUILD} == "true" ]]; then
+                        if [ ${params.INDEX_BUILD} == "true" ]; then
                             curl \
                                 -XPOST \
                                 -u ${ADM_USER}:${ADM_PASS} \
@@ -174,7 +174,7 @@ pipeline {
                     failBuild: false
                 )
 
-                sh """
+                sh """#!/bin/bash
                     # ugly workaround to see the scan result in the UI
                     if [[ ${params.INDEX_BUILD} == "true" ]]; then
                         curl \
@@ -269,8 +269,8 @@ pipeline {
                         buildNumber: env.BUILD_NUMBER
                     )
 
-                    sh """
-                        if [[ ${params.INDEX_BUILD} == "true" ]]; then
+                    sh """#!/bin/bash
+                        if [ ${params.INDEX_BUILD} == "true" ]; then
                             curl \
                                 -XPOST \
                                 -u ${ADM_USER}:${ADM_PASS} \
@@ -299,7 +299,7 @@ pipeline {
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
                 )
-                sh """
+                sh """#!/bin/bash
                     # ugly workaround to see the scan result in the UI
                     if [[ ${params.INDEX_BUILD} == "true" ]]; then
                         curl \
@@ -423,8 +423,7 @@ pipeline {
                         buildNumber: env.BUILD_NUMBER
                     )
 
-                    sh """
-                        echo ${env.MY_BUILD_NAME}
+                    sh """#!/bin/bash
                         if [ ${params.INDEX_BUILD} == "true" ]; then
                             curl \
                                 -XPOST \
@@ -453,7 +452,7 @@ pipeline {
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
                 )
-                sh """
+                sh """#!/bin/bash
                     # ugly workaround to see the scan result in the UI
                     if [ ${params.INDEX_BUILD} == "true" ]; then
                         curl \
