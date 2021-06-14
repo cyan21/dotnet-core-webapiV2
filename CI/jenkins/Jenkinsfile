@@ -452,7 +452,7 @@ pipeline {
                     buildNumber: env.BUILD_NUMBER,
                     failBuild: false
                 )
-                sh """
+                sh """#!/bin/bash
                     # ugly workaround to see the scan result in the UI
                     if [ ${params.INDEX_BUILD} == "true" ]; then
                         curl \
