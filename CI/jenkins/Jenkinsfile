@@ -348,7 +348,6 @@ pipeline {
                     comment: 'passed Xray scan',
                     status: 'XRAY_OK',
                     includeDependencies: false,
-                    failFast: true,
                     copy: false,
                     failFast: false
                 )
@@ -424,7 +423,7 @@ pipeline {
                         buildName: env.DOCKER_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
-                    
+
                     sh """
                         echo ${env.MY_BUILD_NAME}
                         if [ ${params.INDEX_BUILD} == "true" ]; then
