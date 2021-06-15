@@ -148,7 +148,7 @@ pipeline {
                         if [ ${params.INDEX_BUILD} == "true" ]; then
                             curl \
                                 -XPOST \
-                                -u ${ADM_USER}:${ADM_PASS} \
+                                -u "${ADM_USER}:${ADM_PASS}" \
                                 -H "Content-Type: application/json" \
                                 -d '{"names":["'${env.LIB_BUILD_NAME}'"]}' \
                             https://${params.JPD_URL}/xray/api/v1/binMgr/builds
@@ -179,7 +179,7 @@ pipeline {
                     if [ ${params.INDEX_BUILD} == "true" ]; then
                         curl \
                             -XPOST \
-                            -u ${ADM_USER}:${ADM_PASS} \
+                            -u "${ADM_USER}:${ADM_PASS}" \
                             -H "Content-Type: application/json" \
                             -d '{"buildName": "'${env.LIB_BUILD_NAME}'", "buildNumber": "'${env.BUILD_NUMBER}'" }' \
                         https://${params.JPD_URL}/xray/api/v1/scanBuild
@@ -273,7 +273,7 @@ pipeline {
                         if [ ${params.INDEX_BUILD} == "true" ]; then
                             curl \
                                 -XPOST \
-                                -u ${ADM_USER}:${ADM_PASS} \
+                                -u "${ADM_USER}:${ADM_PASS}" \
                                 -H "Content-Type: application/json" \
                                 -d '{"names":["'${env.APP_BUILD_NAME}'"]}' \
                             https://${params.JPD_URL}/xray/api/v1/binMgr/builds
@@ -304,7 +304,7 @@ pipeline {
                     if [ ${params.INDEX_BUILD} == "true" ]; then
                         curl \
                             -XPOST \
-                            -u ${ADM_USER}:${ADM_PASS} \
+                            -u "${ADM_USER}:${ADM_PASS}" \
                             -H "Content-Type: application/json" \
                             -d '{"buildName": "'${env.APP_BUILD_NAME}'", "buildNumber": "'${env.BUILD_NUMBER}'" }' \
                         https://${params.JPD_URL}/xray/api/v1/scanBuild
@@ -427,7 +427,7 @@ pipeline {
                         if [ ${params.INDEX_BUILD} == "true" ]; then
                             curl \
                                 -XPOST \
-                                -u ${ADM_USER}:${ADM_PASS} \
+                                -u "${ADM_USER}:${ADM_PASS}" \
                                 -H "Content-Type: application/json" \
                                 -d '{"names":["'${env.DOCKER_BUILD_NAME}'"]}' \
                             https://${params.JPD_URL}/xray/api/v1/binMgr/builds
@@ -457,7 +457,7 @@ pipeline {
                     if [ ${params.INDEX_BUILD} == "true" ]; then
                         curl \
                             -XPOST \
-                            -u ${ADM_USER}:${ADM_PASS} \
+                            -u "${ADM_USER}:${ADM_PASS}" \
                             -H "Content-Type: application/json" \
                             -d '{"buildName": "'${env.DOCKER_BUILD_NAME}'", "buildNumber": "'${env.BUILD_NUMBER}'" }' \
                         https://${params.JPD_URL}/xray/api/v1/scanBuild
