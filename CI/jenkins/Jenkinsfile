@@ -57,8 +57,9 @@ pipeline {
         string(name: 'DOCKER_REPO', defaultValue: 'urs-docker', description: '')
         string(name: 'DOCKER_PROMOTE', defaultValue: 'urs-docker-release-local', description: '')
 
+        string(name: 'APP_NAME', defaultValue: 'turtle', description: 'will be added as metadata on built artifacts as app.name')
         string(name: 'NEW_VERSION_LIB', defaultValue: '1.1.0', description: 'will update the nuge spec file')
-        string(name: 'NEW_VERSION_APP', defaultValue: '1.1.0', description: '')
+        string(name: 'NEW_VERSION_APP', defaultValue: '1.1.0', description: 'will be added as metadata on built artifacts as app.name')
 
         booleanParam(name: 'DOTNET_BUILD_DEP', defaultValue: false, description: 'Build dependency')
         booleanParam(name: 'DOTNET_BUILD_APP', defaultValue: false, description: 'Build app')
@@ -264,7 +265,7 @@ pipeline {
                                 "files": [
                                     {
                                         "pattern": "${env.WORKSPACE}/webapi-${params.NEW_VERSION_APP}.tar.gz",
-                                        "target": "${params.DOTNET_REPO}/"
+                                        "target": "${params.GENERIC_REPO}/"
                                     }
                                 ]
                             }""",
@@ -272,6 +273,24 @@ pipeline {
                         buildNumber: env.BUILD_NUMBER
                     )
 
+                    rtSetProps (
+                        serverId: env.ART_ID,
+                        spec: """{
+                                \"files\": [
+                                {
+                                    \"aql\": {
+                                        \"items.find\": {
+                                            \"repo\":\"${params.GENERIC_REPO}\",
+                                            \"@build.name\": \"${env.APP_BUILD_NAME}\",
+                                            \"@build.number\": \"${env.BUILD_NUMBER}\"
+                                        }
+                                    }                          
+                                }
+                                ]
+                        }""",
+                        props: "app.name=${params.APP_NAME};app.version=${params.NEW_VERSION_APP}"
+                    )
+                    
                     rtPublishBuildInfo (
                         serverId: env.ART_ID,
                         buildName: env.APP_BUILD_NAME,
@@ -421,7 +440,7 @@ pipeline {
                         serverId: env.ART_ID,
                         image: "${params.JPD_URL}/${params.DOCKER_REPO}/jenkins-dotnetapp:${params.NEW_VERSION_APP}",
                         targetRepo: params.DOCKER_REPO,
-                        properties: 'project-name=uranus;status=stable',
+                        properties: "app.name=${params.APP_NAME};app.version=${params.NEW_VERSION_APP}"
                         buildName: env.DOCKER_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
@@ -516,7 +535,7 @@ pipeline {
                         -XPOST \
                         -H "authorization: ${params.JPIPE_PASS}" \
                         -H "Content-Type: application/json" \
-                        -d '{"DockerBuildName": "'${env.DOCKER_BUILD_NAME}'", "buildNumber": "'\${bNumber}'" }' \
+                        -d '{"DockerBuildName": "'${env.DOCKER_BUILD_NAME}'", "buildNumber": "'\${bNumber}'", "appName": "'${params.APP_NAME}'", "appVersion":"'${params.NEW_VERSION_APP}'"}' \
                     "${params.JPIPE_URL}"
                 """
             }
