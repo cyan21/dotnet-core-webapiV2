@@ -440,7 +440,7 @@ pipeline {
                         serverId: env.ART_ID,
                         image: "${params.JPD_URL}/${params.DOCKER_REPO}/jenkins-dotnetapp:${params.NEW_VERSION_APP}",
                         targetRepo: params.DOCKER_REPO,
-                        properties: "app.name=${params.APP_NAME};app.version=${params.NEW_VERSION_APP}"
+                        properties: "app.name=${params.APP_NAME};app.version=${params.NEW_VERSION_APP}",
                         buildName: env.DOCKER_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
