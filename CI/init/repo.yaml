@@ -48,10 +48,10 @@ localRepositories:
     xray:   
       enabled: true
 remoteRepositories: 
-  urs-dotnetorg-remote:
+  urs-nugetorg-remote:
     type: dotnet
     repoLayout: dotnet-default 
-    url: https://www.dotnet.org/
+    url: https://www.nuget.org/
     forceNugetAuthentication: false
     xray:   
       enabled: true
@@ -80,7 +80,7 @@ virtualRepositories:
       - urs-dotnet-dev-local
       - urs-dotnet-rc-local
       - urs-dotnet-release-local
-      - urs-dotnetorg-remote
+      - urs-nugetorg-remote
     defaultDeploymentRepo: urs-dotnet-dev-local
   urs-docker:
     type: docker

@@ -8,7 +8,7 @@ JFrog platform enabling Artifactory, Xray, Pipelines
 | Artifactory | Nuget local repo     | urs-dotnet-dev-local | | 
 | Artifactory | Nuget local repo     | urs-dotnet-rc-local | for dotnet promotion | 
 | Artifactory | Nuget local repo     | urs-dotnet-release-local | for dotnet promotion | 
-| Artifactory | Nuget remote repo    | urs-dotnetorg-remote | | 
+| Artifactory | Nuget remote repo    | urs-nugetorg-remote | | 
 | Artifactory | Docker local repo    | urs-docker-dev-local | | 
 | Artifactory | Docker local repo    | urs-docker-rc-local | | 
 | Artifactory | Docker local repo    | urs-docker-release-local | | 
