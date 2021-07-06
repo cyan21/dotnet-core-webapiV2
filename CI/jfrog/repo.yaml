@@ -1,45 +1,61 @@
 localRepositories:   
-  vns-nuget-dev-local:
-    type: nuget
+  urs-dotnet-dev-local:
+    type: dotnet
     forceNugetAuthentication: true
-    repoLayout: nuget-default 
+    repoLayout: dotnet-default 
     xray:   
       enabled: true
-  vns-nuget-rc-local:
-    type: nuget
+  urs-dotnet-rc-local:
+    type: dotnet
     forceNugetAuthentication: true
-    repoLayout: nuget-default 
+    repoLayout: dotnet-default 
     xray:   
       enabled: true
-  vns-docker-dev-local:
+  urs-dotnet-release-local:
+    type: dotnet
+    forceNugetAuthentication: true
+    repoLayout: dotnet-default 
+    xray:   
+      enabled: true
+  urs-docker-dev-local:
     type: docker
     repoLayout: simple-default 
     xray:   
       enabled: true
-  vns-docker-release-local:
+  urs-docker-rc-local:
     type: docker
     repoLayout: simple-default 
     xray:   
       enabled: true
-  vns-generic-dev-local:
+  urs-docker-release-local:
+    type: docker
+    repoLayout: simple-default 
+    xray:   
+      enabled: true
+  urs-generic-dev-local:
     type: generic
     repoLayout: simple-default 
     xray:   
       enabled: true
-  vns-generic-rc-local:
+  urs-generic-rc-local:
+    type: generic
+    repoLayout: simple-default 
+    xray:   
+      enabled: true
+  urs-generic-release-local:
     type: generic
     repoLayout: simple-default 
     xray:   
       enabled: true
 remoteRepositories: 
-  vns-nugetorg-remote:
-    type: nuget
-    repoLayout: nuget-default 
-    url: https://www.nuget.org/
-    forceNugetAuthentication: true
+  urs-dotnetorg-remote:
+    type: dotnet
+    repoLayout: dotnet-default 
+    url: https://www.dotnet.org/
+    forceNugetAuthentication: false
     xray:   
       enabled: true
-  vns-dockerhub-remote:
+  urs-dockerhub-remote:
     type: docker 
     url: https://registry-1.docker.io/
     dockerApiVersion: V2
@@ -47,7 +63,7 @@ remoteRepositories:
     enableTokenAuthentication: true
     xray:   
       enabled: true
-  vns-mcr-remote:
+  urs-mcr-remote:
     type: docker 
     url: https://mcr.microsoft.com/
     dockerApiVersion: V2
@@ -56,29 +72,32 @@ remoteRepositories:
     xray:   
       enabled: true
 virtualRepositories: 
-  vns-nuget:
-    type: nuget
-    repoLayout: nuget-default 
+  urs-dotnet:
+    type: dotnet
+    repoLayout: dotnet-default 
     forceNugetAuthentication: true
     repositories:
-      - vns-nuget-dev-local
-      - vns-nuget-rc-local
-      - vns-nugetorg-remote
-    defaultDeploymentRepo: vns-nuget-dev-local
-  vns-docker:
+      - urs-dotnet-dev-local
+      - urs-dotnet-rc-local
+      - urs-dotnet-release-local
+      - urs-dotnetorg-remote
+    defaultDeploymentRepo: urs-dotnet-dev-local
+  urs-docker:
     type: docker
     dockerApiVersion: V2
     repoLayout: simple-default 
     repositories:   
-      - vns-docker-dev-local
-      - vns-docker-release-local
-      - vns-dockerhub-remote
-      - vns-mcr-remote
-    defaultDeploymentRepo: vns-docker-dev-local
-  vns-generic:
+      - urs-docker-dev-local
+      - urs-docker-rc-local
+      - urs-docker-release-local
+      - urs-dockerhub-remote
+      - urs-mcr-remote
+    defaultDeploymentRepo: urs-docker-dev-local
+  urs-generic:
     type: generic
     repoLayout: simple-default 
     repositories:   
-      - vns-generic-dev-local
-      - vns-generic-rc-local
-    defaultDeploymentRepo: vns-generic-dev-local
+      - urs-generic-dev-local
+      - urs-generic-rc-local
+      - urs-generic-release-local
+    defaultDeploymentRepo: urs-generic-dev-local
