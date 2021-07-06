@@ -4,20 +4,20 @@ dotnetProject:
   pipelineNameDotnetApp: dotnet_app
   # container image used for the build 
   container:
-    registry: platform-us.staging.gcp.devopsacc.team/vns-docker
+    registry: platform-us.staging.gcp.devopsacc.team/urs-docker
     image: dotnet/core/sdk
     tag: 3.2-jfrog
-    repoSource: vns-docker
-    repoPromotion1: vns-docker-release-local
+    repoSource: urs-docker
+    repoPromotion1: urs-docker-release-local
   nuget:
-    repoSource: vns-nuget #vns-nugetorg-remote
-    repoPromotion1: vns-nuget-rc-local
+    repoSource: urs-nuget #urs-nugetorg-remote
+    repoPromotion1: urs-nuget-rc-local
   generic:
-    repoSource: vns-generic 
-    repoPromotion1: vns-generic-rc-local    
+    repoSource: urs-generic 
+    repoPromotion1: urs-generic-rc-local    
   artifactoryIntegration: artifactory_eu
   # to authenticate when building the image "FROM" in the dockerfile
-  dockerIntegration: vns_docker_registry
+  dockerIntegration: urs_docker_registry
 
 dotnetInitResources:
   gitRepo: 
