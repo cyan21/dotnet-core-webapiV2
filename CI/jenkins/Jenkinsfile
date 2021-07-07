@@ -437,9 +437,7 @@ pipeline {
                         echo \${git_path}
                         curl -O https://raw.githubusercontent.com/\${git_path}/${params.MY_GIT_BRANCH}/CI/runtime/Dockerfile
                         tar -xzvf webapi.tar.gz -C out/
-                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} ${env.DOCKER_REGISTRY_URL}
-                        ls -l 
-                        docker build --network=host -t ${env.DOCKER_REGISTRY_URL}/jenkins-dotnetapp:${params.NEW_VERSION_APP} .
+                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} ${DOCKER_REGISTRY_URL}
                     """
                 
                     rtDockerPush(
