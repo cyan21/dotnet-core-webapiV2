@@ -8,6 +8,10 @@ pipeline {
               labels:
                 some-label: some-label-value
             spec:
+              hostAliases:
+              - ip: "34.121.100.83"
+                hostnames:
+                - "urs-docker.platform-us.staging.gcp.devopsacc.team"
               containers:
               - name: dotnet
                 image: mcr.microsoft.com/dotnet/core/sdk:3.1
@@ -41,6 +45,7 @@ pipeline {
         LIB_BUILD_NAME = 'jenkins-dotnet-lib'
         APP_BUILD_NAME = 'jenkins-dotnet-app'
         DOCKER_BUILD_NAME = 'jenkins-dotnet-docker'
+        DOCKER_REGISTRY_URL = "${params.DOCKER_SUB_DOMAIN == true ? ${params.DOCKER_REPO}.${params.JPD_URL} : ${params.JPD_URL}/${params.DOCKER_REPO}}" 
     }
 
     parameters {
@@ -56,6 +61,7 @@ pipeline {
 
         string(name: 'DOCKER_REPO', defaultValue: 'urs-docker', description: '')
         string(name: 'DOCKER_PROMOTE', defaultValue: 'urs-docker-release-local', description: '')
+        booleanParam(name: 'DOCKER_SUB_DOMAIN', defaultValue: true, description: 'false means Docker Repo Path')
 
         string(name: 'APP_NAME', defaultValue: 'turtle', description: 'will be added as metadata on built artifacts as app.name')
         string(name: 'NEW_VERSION_LIB', defaultValue: '1.1.0', description: 'will update the nuge spec file')
@@ -431,14 +437,15 @@ pipeline {
                         echo \${git_path}
                         curl -O https://raw.githubusercontent.com/\${git_path}/${params.MY_GIT_BRANCH}/CI/runtime/Dockerfile
                         tar -xzvf webapi.tar.gz -C out/
-                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} ${params.JPD_URL}
+                        echo ${env.DOCKER_REGISTRY_URL}
+                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} $${env.DOCKER_REGISTRY_URL}
                         ls -l 
-                        docker build --network=host -t ${params.JPD_URL}/${params.DOCKER_REPO}/jenkins-dotnetapp:${params.NEW_VERSION_APP} .
+                        docker build --network=host -t ${env.DOCKER_REGISTRY_URL}/jenkins-dotnetapp:${params.NEW_VERSION_APP} .
                     """
                 
                     rtDockerPush(
                         serverId: env.ART_ID,
-                        image: "${params.JPD_URL}/${params.DOCKER_REPO}/jenkins-dotnetapp:${params.NEW_VERSION_APP}",
+                        image: "${env.DOCKER_REGISTRY_URL}/jenkins-dotnetapp:${params.NEW_VERSION_APP}",
                         targetRepo: params.DOCKER_REPO,
                         properties: "app.name=${params.APP_NAME};app.version=${params.NEW_VERSION_APP}",
                         buildName: env.DOCKER_BUILD_NAME,
