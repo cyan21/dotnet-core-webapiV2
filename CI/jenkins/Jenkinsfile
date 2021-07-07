@@ -45,7 +45,7 @@ pipeline {
         LIB_BUILD_NAME = 'jenkins-dotnet-lib'
         APP_BUILD_NAME = 'jenkins-dotnet-app'
         DOCKER_BUILD_NAME = 'jenkins-dotnet-docker'
-        DOCKER_REGISTRY_URL=sh(returnStdout: true, script: "if [ \"params.DOCKER_SUB_DOMAIN\" == \"true\" ]; then echo \"${params.DOCKER_REPO}.${params.JPD_URL}\"; else echo \"${params.JPD_URL}/${params.DOCKER_REPO}\"; fi")
+        DOCKER_REGISTRY_URL=sh(returnStdout: true, script: """ if [ \"${params.DOCKER_SUB_DOMAIN}\" = \"true\" ]; then echo \"${params.DOCKER_REPO}.${params.JPD_URL}\"; else echo \"${params.JPD_URL}/${params.DOCKER_REPO}\"; fi""")
     }
 
     parameters {
