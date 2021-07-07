@@ -45,7 +45,7 @@ pipeline {
         LIB_BUILD_NAME = 'jenkins-dotnet-lib'
         APP_BUILD_NAME = 'jenkins-dotnet-app'
         DOCKER_BUILD_NAME = 'jenkins-dotnet-docker'
-        DOCKER_REGISTRY_URL = "${params.DOCKER_SUB_DOMAIN == true ? ${params.DOCKER_REPO}.${params.JPD_URL} : ${params.JPD_URL}/${params.DOCKER_REPO}}" 
+        DOCKER_REGISTRY_URL=sh(returnStdout: true, script: "if [ \"params.DOCKER_SUB_DOMAIN\" == \"true\" ]; then echo \"${params.DOCKER_REPO}.${params.JPD_URL}\"; else echo \"${params.JPD_URL}/${params.DOCKER_REPO}\"; fi")
     }
 
     parameters {
@@ -437,7 +437,9 @@ pipeline {
                         echo \${git_path}
                         curl -O https://raw.githubusercontent.com/\${git_path}/${params.MY_GIT_BRANCH}/CI/runtime/Dockerfile
                         tar -xzvf webapi.tar.gz -C out/
-                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} ${DOCKER_REGISTRY_URL}
+
+                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} ${env.DOCKER_REGISTRY_URL}
+                        docker build --network=host -t ${env.DOCKER_REGISTRY_URL}/jenkins-dotnetapp:${params.NEW_VERSION_APP} .
                     """
                 
                     rtDockerPush(
