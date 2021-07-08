@@ -49,6 +49,7 @@ pipeline {
         string(name: 'MY_GIT_BRANCH', defaultValue: 'master', description: '')
 
         string(name: 'JPD_URL', defaultValue: '', description: 'DO NOT ADD PROTOCOL')
+
         string(name: 'DOTNET_REPO', defaultValue: 'urs-dotnet', description: '')
         string(name: 'DOTNET_PROMOTE', defaultValue: 'urs-dotnet-release-local', description: '')
 
@@ -76,6 +77,7 @@ pipeline {
 
         booleanParam(name: 'JPIPE_TRIGGER', defaultValue: false, description: '')
         string(name: 'JPIPE_URL', defaultValue: '', description: '')
+
         string(name: 'JPIPE_PASS', defaultValue: '***', description: '')
 
         string(name: 'MY_BUILD_NUMBER', defaultValue: '0', description: 'Only used if JPIPE_TRIGGER is ticked. If set to 0 will take the current run ID')
