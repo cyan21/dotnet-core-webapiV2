@@ -41,13 +41,15 @@ pipeline {
         LIB_BUILD_NAME = 'jenkins-dotnet-lib'
         APP_BUILD_NAME = 'jenkins-dotnet-app'
         DOCKER_BUILD_NAME = 'jenkins-dotnet-docker'
+        DOCKER_REGISTRY_URL=sh(returnStdout: true, script: """ if [ \"${params.DOCKER_SUB_DOMAIN}\" = \"true\" ]; then echo \"${params.DOCKER_REPO}.${params.JPD_URL}\"; else echo \"${params.JPD_URL}/${params.DOCKER_REPO}\"; fi""").trim()
     }
 
     parameters {
         string(name: 'MY_GIT_URL', defaultValue: 'https://github.com/cyan21/dotnet-core-webapiV2', description: 'DO NOT ADD .git at the end')
         string(name: 'MY_GIT_BRANCH', defaultValue: 'master', description: '')
 
-        string(name: 'JPD_URL', defaultValue: 'yann-swampup.dev.aws.devopsacc.team', description: 'DO NOT ADD PROTOCOL')
+        string(name: 'JPD_URL', defaultValue: '', description: 'DO NOT ADD PROTOCOL')
+
         string(name: 'DOTNET_REPO', defaultValue: 'urs-dotnet', description: '')
         string(name: 'DOTNET_PROMOTE', defaultValue: 'urs-dotnet-release-local', description: '')
 
@@ -56,6 +58,7 @@ pipeline {
 
         string(name: 'DOCKER_REPO', defaultValue: 'urs-docker', description: '')
         string(name: 'DOCKER_PROMOTE', defaultValue: 'urs-docker-release-local', description: '')
+        booleanParam(name: 'DOCKER_SUB_DOMAIN', defaultValue: false, description: 'false means Docker Repo Path')
 
         string(name: 'APP_NAME', defaultValue: 'turtle', description: 'will be added as metadata on built artifacts as app.name')
         string(name: 'NEW_VERSION_LIB', defaultValue: '1.1.0', description: 'will update the nuge spec file')
@@ -73,7 +76,8 @@ pipeline {
         string(name: 'ADM_PASS', defaultValue: '', description: 'Only used if INDEX_BUILD is ticked')
 
         booleanParam(name: 'JPIPE_TRIGGER', defaultValue: false, description: '')
-        string(name: 'JPIPE_URL', defaultValue: 'https://pipelines-api-yann-swampup.dev.aws.devopsacc.team/v1/projectIntegrations/4/hook', description: '')
+        string(name: 'JPIPE_URL', defaultValue: '', description: '')
+
         string(name: 'JPIPE_PASS', defaultValue: '***', description: '')
 
         string(name: 'MY_BUILD_NUMBER', defaultValue: '0', description: 'Only used if JPIPE_TRIGGER is ticked. If set to 0 will take the current run ID')
@@ -431,14 +435,14 @@ pipeline {
                         echo \${git_path}
                         curl -O https://raw.githubusercontent.com/\${git_path}/${params.MY_GIT_BRANCH}/CI/runtime/Dockerfile
                         tar -xzvf webapi.tar.gz -C out/
-                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} ${params.JPD_URL}
-                        ls -l 
-                        docker build --network=host -t ${params.JPD_URL}/${params.DOCKER_REPO}/jenkins-dotnetapp:${params.NEW_VERSION_APP} .
+
+                        docker login -u ${ARTY_CREDS_USR} -p ${ARTY_CREDS_PSW} ${env.DOCKER_REGISTRY_URL}
+                        docker build --network=host -t ${env.DOCKER_REGISTRY_URL}/jenkins-dotnetapp:${params.NEW_VERSION_APP} .
                     """
                 
                     rtDockerPush(
                         serverId: env.ART_ID,
-                        image: "${params.JPD_URL}/${params.DOCKER_REPO}/jenkins-dotnetapp:${params.NEW_VERSION_APP}",
+                        image: "${env.DOCKER_REGISTRY_URL}/jenkins-dotnetapp:${params.NEW_VERSION_APP}",
                         targetRepo: params.DOCKER_REPO,
                         properties: "app.name=${params.APP_NAME};app.version=${params.NEW_VERSION_APP}",
                         buildName: env.DOCKER_BUILD_NAME,
