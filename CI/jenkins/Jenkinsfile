@@ -130,6 +130,7 @@ pipeline {
                     rtDotnetRun (
                         resolverId: "ART_RESOLVER",
                         args: "build MyLib/ -c Release",
+                        module: 'mylib',
                         apiProtocol: "v3",
                         buildName: env.LIB_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
