@@ -248,7 +248,8 @@ pipeline {
                     rtDotnetRun (
                         resolverId: "ART_RESOLVER",
                         args: "publish MyWebAPI/ -o out -c Release",
-                        module: 'myDeps',
+                        module: 'myapp',
+                        apiProtocol: "v3",
                         buildName: env.APP_BUILD_NAME,
                         buildNumber: env.BUILD_NUMBER
                     )
