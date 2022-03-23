@@ -25,17 +25,16 @@ jobs:
       xrayConnection: 'new-stg-soleng-xray'
       watchesSource: 'none'
       allowFailBuild: false
-      
-  - task: ArtifactoryDotnetCore@1
+  - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
-      artifactoryService: 'new-soleng-stg'
+      artifactoryConnection: 'new-stg-soleng'
       targetResolveRepo: 'urs-dotnet'
       rootPath: 'MyLib/*.sln'
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
-      includeEnvVars: true  
+      includeEnvVars: true
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
