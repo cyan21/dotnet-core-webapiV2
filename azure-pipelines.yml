@@ -27,7 +27,7 @@ jobs:
       script: |
         pwd
         ls -l 
-        mv new-dotnet-core-webapi.sln new-dotnet-core-webapi.sln.tmp
+        cp myLib/greeting/greeting.csproj .
         ls -l
         echo $(System.DefaultWorkingDirectory)
     displayName: workaround for JFrog Audit
@@ -36,7 +36,6 @@ jobs:
       xrayConnection: 'new-stg-soleng-xray'
       watchesSource: 'none'
       allowFailBuild: false
-      workingDirectory: 'MyLib/greeting/'
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
