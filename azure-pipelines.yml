@@ -27,7 +27,7 @@ jobs:
       script: |
         pwd
         ls -l 
-        cp myLib/greeting/greeting.csproj .
+        cp MyLib/greeting/greeting.csproj .
         ls -l
         echo $(System.DefaultWorkingDirectory)
     displayName: workaround for JFrog Audit
