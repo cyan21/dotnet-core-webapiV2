@@ -15,19 +15,16 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
+        ls -l 
+        cp MyLib/greeting/greeting.csproj .
         ls -l
-        cd MyLib/
-        ls -l
+    displayName: workaround for JFrog Audit
   - task: JFrogAudit@1
     inputs:
       xrayConnection: 'new-stg-soleng-xray'
       watchesSource: 'none'
       allowFailBuild: false
       workingDirectory: MyLib/greeting/
-  - task: CmdLine@2
-    inputs:
-      script: |
-        ls -l
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
