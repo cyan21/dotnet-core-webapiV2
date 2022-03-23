@@ -15,8 +15,9 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
-        pwd
+        ls -l
         cd MyLib/
+        ls -l
   - task: JFrogAudit@1
     inputs:
       xrayConnection: 'new-stg-soleng-xray'
@@ -26,7 +27,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
-        pwd
+        ls -l
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
