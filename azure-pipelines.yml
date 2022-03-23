@@ -11,20 +11,13 @@ pool:
 
 jobs:
 - job: dotnet_lib
-  steps:
-  - script: echo Hello, world!
-    displayName: 'Run a one-line script'
-
-  - script: |
-      echo Add other tasks to build, test, and deploy your project.
-      echo See https://aka.ms/yaml
-    displayName: 'Run a multi-line script'
-  
+  steps:  
   - task: JFrogAudit@1
     inputs:
       xrayConnection: 'new-stg-soleng-xray'
       watchesSource: 'none'
       allowFailBuild: false
+      workingDirectory: MyLib
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
