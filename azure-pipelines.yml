@@ -22,12 +22,13 @@ jobs:
       cliInstallationRepo: 'jfrog-cli-releases'
       installCustomVersion: true
       cliVersion: '2.14.0'
+#         cp MyLib/greeting/greeting.csproj .
+
   - task: CmdLine@2
     inputs:
       script: |
         pwd
         ls -l 
-        cp MyLib/greeting/greeting.csproj .
         ls -l
         echo $(System.DefaultWorkingDirectory)
     displayName: workaround for JFrog Audit
