@@ -34,7 +34,6 @@ jobs:
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
-      includeEnvVars: true
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
