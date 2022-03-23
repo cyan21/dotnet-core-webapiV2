@@ -4,7 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- azure-pipelines
 
 pool:
   vmImage: ubuntu-latest
@@ -20,14 +20,40 @@ jobs:
       echo See https://aka.ms/yaml
     displayName: 'Run a multi-line script'
   
-  - task: ArtifactoryNuGet@2
+  - task: JFrogAudit@1
+    inputs:
+      xrayConnection: 'new-stg-soleng-xray'
+      watchesSource: 'none'
+      allowFailBuild: false
+      
+  - task: ArtifactoryDotnetCore@1
     inputs:
       command: 'restore'
-      solutionPath: '**/*.sln'
-      noNuGetCache: true
+      artifactoryService: 'new-soleng-stg'
+      targetResolveRepo: 'urs-dotnet'
+      rootPath: 'MyLib/*.sln'
+      collectBuildInfo: true
+      buildName: '$(Build.DefinitionName)'
+      buildNumber: '$(Build.BuildNumber)'
+      includeEnvVars: true  
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      projects: 'MyLib'
+      arguments: '-c Release'
+  - task: JFrogDotnetCore@1
+    inputs:
+      command: 'push'
+      artifactoryConnection: 'new-stg-soleng'
+      targetDeployRepo: 'urs-dotnet'
+      targetDeployPath: 'azure'
+      pathToNupkg: 'MyLib/greeting/**/*.nupkg'
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
       includeEnvVars: true
-      nugetProtocolVersion: 'v3'
-
+  - task: ArtifactoryPublishBuildInfo@1
+    inputs:
+      artifactoryService: 'new-soleng-stg'
+      buildName: '$(Build.DefinitionName)'
+      buildNumber: '$(Build.BuildNumber)'
