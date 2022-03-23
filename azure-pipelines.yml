@@ -36,7 +36,7 @@ jobs:
       xrayConnection: 'new-stg-soleng-xray'
       watchesSource: 'none'
       allowFailBuild: false
-      workingDirectory: $(System.DefaultWorkingDirectory)/MyLib/greeting/
+      workingDirectory: 'MyLib/greeting/'
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
