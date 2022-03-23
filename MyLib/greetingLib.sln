@@ -5,8 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "greeting", "greeting\greeting.csproj", "{F8C51468-A7FB-4346-A6C8-4BECD30698DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "greeting.Tests", "greeting.Tests\greeting.Tests.csproj", "{156511C4-88DE-49D5-82FE-4895D8CA5228}"
-EndProject
+#Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "greeting.Tests", "greeting.Tests\greeting.Tests.csproj", "{156511C4-88DE-49D5-82FE-4895D8CA5228}"
+#EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
