@@ -15,6 +15,7 @@ jobs:
   - task: JFrogToolsInstaller@1
     inputs:
       artifactoryConnection: 'new-stg-soleng'
+      cliInstallationRepo: 'jfrog-cli-releases'
       installCustomVersion: true
       cliVersion: '2.14.0'
   - task: CmdLine@2
