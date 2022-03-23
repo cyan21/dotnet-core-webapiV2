@@ -12,6 +12,11 @@ pool:
 jobs:
 - job: dotnet_lib
   steps:  
+  - task: JFrogToolsInstaller@1
+    inputs:
+      artifactoryConnection: 'new-stg-soleng'
+      installCustomVersion: true
+      cliVersion: '2.14.0'
   - task: CmdLine@2
     inputs:
       script: |
