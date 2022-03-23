@@ -3,6 +3,10 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+variables:
+- name: JFROG_CLI_LOG_LEVEL
+  value: DEBUG 
+
 trigger:
 - azure-pipelines
 
