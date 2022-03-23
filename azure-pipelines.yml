@@ -12,12 +12,21 @@ pool:
 jobs:
 - job: dotnet_lib
   steps:  
+  - task: CmdLine@2
+    inputs:
+      script: |
+        pwd
+        cd MyLib/
   - task: JFrogAudit@1
     inputs:
       xrayConnection: 'new-stg-soleng-xray'
       watchesSource: 'none'
       allowFailBuild: false
       workingDirectory: MyLib/greeting/
+  - task: CmdLine@2
+    inputs:
+      script: |
+        pwd
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
