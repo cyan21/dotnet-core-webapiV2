@@ -50,8 +50,8 @@ jobs:
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
       includeEnvVars: true
-  - task: ArtifactoryPublishBuildInfo@1
+  - task: JFrogPublishBuildInfo@1
     inputs:
-      artifactoryService: 'new-soleng-stg'
+      artifactoryConnection: 'new-stg-soleng'
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
