@@ -26,12 +26,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
-        pwd
-        ls -l 
-        ls -l
-        echo $(System.DefaultWorkingDirectory)
-        cp MyLib/greeting/greeting.csproj .
-        cat greeting.csproj
+        ls -l $(Agent. TempDirectory)
     displayName: workaround for JFrog Audit
  # - task: JFrogAudit@1
  #   inputs:
@@ -47,6 +42,13 @@ jobs:
       collectBuildInfo: true
 #      buildName: '$(Build.DefinitionName)'
 #      buildNumber: '$(Build.BuildNumber)'
+  - task: CmdLine@2
+    inputs:
+      script: |
+        ls -l $(Agent. TempDirectory)
+        ls -l $(Agent. TempDirectory)/jfrog/build
+- job: dotnet_lib_test
+  steps:  
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
