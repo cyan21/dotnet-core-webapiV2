@@ -50,7 +50,7 @@ jobs:
       script: |
         ls -l  ${AGENT_TEMPDIRECTORY}
         ls -l ${JFROG_CLI_TEMP_DIR}
-        ls -l ${JFROG_CLI_TEMP_DIR}/jfrog/build
+        ls -l ${JFROG_CLI_TEMP_DIR}/jfrog/
 - job: dotnet_lib_test
   dependsOn:
   - dotnet_lib
