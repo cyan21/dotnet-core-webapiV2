@@ -33,11 +33,11 @@ jobs:
         cp MyLib/greeting/greeting.csproj .
         cat greeting.csproj
     displayName: workaround for JFrog Audit
-  - task: JFrogAudit@1
-    inputs:
-      xrayConnection: 'new-stg-soleng-xray'
-      watchesSource: 'none'
-      allowFailBuild: false
+ # - task: JFrogAudit@1
+ #   inputs:
+ #     xrayConnection: 'new-stg-soleng-xray'
+ #     watchesSource: 'none'
+ #     allowFailBuild: false
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
@@ -45,8 +45,8 @@ jobs:
       targetResolveRepo: 'urs-dotnet'
       rootPath: 'MyLib/*.sln'
       collectBuildInfo: true
-      buildName: '$(Build.DefinitionName)'
-      buildNumber: '$(Build.BuildNumber)'
+#      buildName: '$(Build.DefinitionName)'
+#      buildNumber: '$(Build.BuildNumber)'
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
@@ -57,7 +57,7 @@ jobs:
       command: 'push'
       artifactoryConnection: 'new-stg-soleng'
       targetDeployRepo: 'urs-dotnet'
-      targetDeployPath: 'azure'
+      targetDeployPath: 'test'
       pathToNupkg: 'MyLib/greeting/**/*.nupkg'
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
