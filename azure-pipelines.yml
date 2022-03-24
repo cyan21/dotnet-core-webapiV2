@@ -26,7 +26,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
-        ls -l $(Agent. TempDirectory)
+        ls -l ${AGENT_TEMPDIRECTORY}
     displayName: workaround for JFrog Audit
  # - task: JFrogAudit@1
  #   inputs:
@@ -45,10 +45,14 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
-        ls -l $(Agent. TempDirectory)
-        ls -l $(Agent. TempDirectory)/jfrog/build
+        ls -l ls -l ${AGENT_TEMPDIRECTORY}
+        ls -l ls -l ${AGENT_TEMPDIRECTORY}/jfrog/build
 - job: dotnet_lib_test
   steps:  
+  - task: CmdLine@2
+    inputs:
+      script: |
+        ls -l ls -l ${AGENT_TEMPDIRECTORY}
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
