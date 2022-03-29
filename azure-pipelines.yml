@@ -25,16 +25,17 @@ jobs:
       installCustomVersion: true
       cliVersion: '2.14.0'
 
-#  - task: CmdLine@2
-#    inputs:
-#      script: |
-#        ls -l ${AGENT_TEMPDIRECTORY}
-#        ls -l ${JFROG_CLI_TEMP_DIR}
-#   displayName: workaround for JFrog Audit
+  - task: CmdLine@2
+    inputs:
+      script: |
+        ls -l ${AGENT_TEMPDIRECTORY}
+        ls -l ${JFROG_CLI_TEMP_DIR}
+        ls -l $(SYSTEM_DEFAULTWORKINGDIRECTORY)
+    displayName: workaround for JFrog Audit
   - task: JFrogAudit@1
     inputs:
       xrayConnection: 'new-stg-soleng-xray'
-      workingDirectory: 'MyLib/greeting'
+      workingDirectory: 'MyLib/greeting/'
       watchesSource: 'none'
       allowFailBuild: false
   - task: JFrogDotnetCore@1
