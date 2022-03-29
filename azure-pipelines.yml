@@ -34,6 +34,7 @@ jobs:
   - task: JFrogAudit@1
     inputs:
       xrayConnection: 'new-stg-soleng-xray'
+      workingDirectory: 'MyLib/'
       watchesSource: 'none'
       allowFailBuild: false
   - task: JFrogDotnetCore@1
