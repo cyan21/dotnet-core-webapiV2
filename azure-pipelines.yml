@@ -25,17 +25,17 @@ jobs:
       installCustomVersion: true
       cliVersion: '2.14.0'
 
-  - task: CmdLine@2
+#  - task: CmdLine@2
+#    inputs:
+#      script: |
+#        ls -l ${AGENT_TEMPDIRECTORY}
+#        ls -l ${JFROG_CLI_TEMP_DIR}
+#   displayName: workaround for JFrog Audit
+  - task: JFrogAudit@1
     inputs:
-      script: |
-        ls -l ${AGENT_TEMPDIRECTORY}
-        ls -l ${JFROG_CLI_TEMP_DIR}
-    displayName: workaround for JFrog Audit
- # - task: JFrogAudit@1
- #   inputs:
- #     xrayConnection: 'new-stg-soleng-xray'
- #     watchesSource: 'none'
- #     allowFailBuild: false
+      xrayConnection: 'new-stg-soleng-xray'
+      watchesSource: 'none'
+      allowFailBuild: false
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
@@ -43,8 +43,8 @@ jobs:
       targetResolveRepo: 'urs-dotnet'
       rootPath: 'MyLib/*.sln'
       collectBuildInfo: true
-#      buildName: '$(Build.DefinitionName)'
-#      buildNumber: '$(Build.BuildNumber)'
+      buildName: '$(Build.DefinitionName)'
+      buildNumber: '$(Build.BuildNumber)'
   - task: CmdLine@2
     inputs:
       script: |
