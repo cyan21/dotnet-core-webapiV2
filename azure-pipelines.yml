@@ -32,12 +32,6 @@ jobs:
         ls -l ${JFROG_CLI_TEMP_DIR}
         ls -l ${SYSTEM_DEFAULTWORKINGDIRECTORY}
     displayName: workaround for JFrog Audit
-  - task: JFrogAudit@1
-    inputs:
-      xrayConnection: 'new-stg-soleng-xray'
-      workingDirectory: '$(System.DefaultWorkingDirectory)/MyLib/greeting/'
-      watchesSource: 'none'
-      allowFailBuild: false
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
@@ -47,6 +41,13 @@ jobs:
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
+  - task: JFrogAudit@1
+    inputs:
+      xrayConnection: 'new-stg-soleng-xray'
+#      workingDirectory: '$(System.DefaultWorkingDirectory)/MyLib/greeting/'
+      workingDirectory: 'MyLib/greeting/'
+      watchesSource: 'none'
+      allowFailBuild: false
   - task: CmdLine@2
     inputs:
       script: |
