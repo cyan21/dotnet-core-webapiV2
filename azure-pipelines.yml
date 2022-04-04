@@ -28,6 +28,7 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
+        env | grep JFROG 
         ls -l ${AGENT_TEMPDIRECTORY}
         ls -l ${JFROG_CLI_TEMP_DIR}
         ls -l ${SYSTEM_DEFAULTWORKINGDIRECTORY}
