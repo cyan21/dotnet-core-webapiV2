@@ -116,7 +116,8 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf rt u webapi-$(APP_VERSION).tar.gz $(GENERIC_REPO)  --module=dotnet
-        jf rt bce
-        jf rt bp
+        jf rt u webapi-$(APP_VERSION).tar.gz $(GENERIC_REPO)  --module=dotnet --build-name=$(JFROG_CLI_BUILD_NAME)
+        jf rt bce $(JFROG_CLI_BUILD_NAME)
+        jf rt bag $(JFROG_CLI_BUILD_NAME)
+        jf rt bp $(JFROG_CLI_BUILD_NAME)
     displayName: Publish application
