@@ -32,7 +32,6 @@ jobs:
         pwd
         ls -l 
         dotnet -h
-        nuget -h
     displayName: workaround for JFrog Audit
   - task: JfrogCliV2@1
     inputs:
@@ -41,7 +40,7 @@ jobs:
       cliVersion: '$(jfrogCliVersion)'
       command: |
         jf -v
-        jf nuget config --repo-resolve ps-nuget
+        jf nugetc --repo-resolve ps-nuget
     displayName: Init JFrog CLI
 
 
