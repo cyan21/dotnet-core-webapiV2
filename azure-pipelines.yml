@@ -31,6 +31,8 @@ jobs:
         ls -l ${SYSTEM_DEFAULTWORKINGDIRECTORY}
         pwd
         ls -l 
+        dotnet -h
+        nuget -h
     displayName: workaround for JFrog Audit
   - task: JfrogCliV2@1
     inputs:
