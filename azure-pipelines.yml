@@ -4,13 +4,14 @@
 # https://aka.ms/yaml
 
 variables:
+- name: JFROG_CLI_BUILD_NAME
+  value: dotnet-lib
+- name: JFROG_CLI_BUILD_NUMBER
+  value: $(Build.BuildNumber)
 - name: JFROG_CLI_LOG_LEVEL
   value: DEBUG 
 - name: JFROG_CLI_TEMP_DIR
   value: /home/vsts/work/_temp
-
-trigger:
-- azure-pipelines
 
 pool:
   vmImage: ubuntu-latest
@@ -18,12 +19,14 @@ pool:
 jobs:
 - job: dotnet_lib
   steps:  
-  - task: JFrogToolsInstaller@1
+  - task: JfrogCliV2@1
     inputs:
-      artifactoryConnection: 'new-stg-soleng'
-      cliInstallationRepo: 'jfrog-cli-releases'
-      installCustomVersion: true
-      cliVersion: '2.14.0'
+      jfrogPlatformConnection: 'yann-sbx'
+      command: |
+        jf -v
+        date
+        echo ${JFROG_CLI_BUILD_NUMBER}
+        jf nuget config --repo-resolve ps-nuget
 
   - task: CmdLine@2
     inputs:
@@ -34,60 +37,6 @@ jobs:
         ls -l ${SYSTEM_DEFAULTWORKINGDIRECTORY}
         pwd
         ls -l 
-        echo $(System.DefaultWorkingDirectory)
-        cp MyLib/greeting/greeting.csproj .
-        cat greeting.csproj
     displayName: workaround for JFrog Audit
-  - task: JFrogAudit@1
-    inputs:
-      xrayConnection: 'new-stg-soleng-xray'
-      watchesSource: 'none'
-      allowFailBuild: false
-  - task: JFrogDotnetCore@1
-    inputs:
-      command: 'restore'
-      artifactoryConnection: 'new-stg-soleng'
-      targetResolveRepo: 'urs-dotnet'
-      rootPath: 'MyLib/*.sln'
-      collectBuildInfo: true
-      buildName: '$(Build.DefinitionName)'
-      buildNumber: '$(Build.BuildNumber)'
 
-  - task: JFrogAudit@1
-    inputs:
-      xrayConnection: 'new-stg-soleng-xray'
-#      workingDirectory: '$(System.DefaultWorkingDirectory)/MyLib/greeting/'
-      workingDirectory: 'MyLib/greeting/'
-      watchesSource: 'none'
-      allowFailBuild: false
 
-- job: dotnet_lib_test
-  dependsOn:
-  - dotnet_lib
-  steps:  
-  - task: CmdLine@2
-    inputs:
-      script: |
-        ls -l ${AGENT_TEMPDIRECTORY}
-
-  - task: DotNetCoreCLI@2
-    inputs:
-      command: 'build'
-      projects: 'MyLib'
-      arguments: '-c Release'
-  - task: JFrogDotnetCore@1
-    inputs:
-      command: 'push'
-      artifactoryConnection: 'new-stg-soleng'
-      targetDeployRepo: 'urs-dotnet'
-      targetDeployPath: 'azure'
-      pathToNupkg: 'MyLib/greeting/**/*.nupkg'
-      collectBuildInfo: true
-      buildName: '$(Build.DefinitionName)'
-      buildNumber: '$(Build.BuildNumber)'
-      includeEnvVars: true
-  - task: JFrogPublishBuildInfo@1
-    inputs:
-      artifactoryConnection: 'new-stg-soleng'
-      buildName: '$(Build.DefinitionName)'
-      buildNumber: '$(Build.BuildNumber)'
