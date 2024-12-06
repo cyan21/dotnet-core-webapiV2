@@ -12,6 +12,8 @@ variables:
   value: DEBUG 
 - name: JFROG_CLI_TEMP_DIR
   value: /home/vsts/work/_temp
+- name: jfrogCliVersion
+  value: 2.72.2
 
 pool:
   vmImage: ubuntu-latest
@@ -19,14 +21,6 @@ pool:
 jobs:
 - job: dotnet_lib
   steps:  
-  - task: JfrogCliV2@1
-    inputs:
-      jfrogPlatformConnection: 'yann-sbx'
-      command: |
-        jf -v
-        jf nuget config --repo-resolve ps-nuget
-    displayName: Init JFrog CLI
-
   - task: CmdLine@2
     inputs:
       script: |
@@ -38,5 +32,14 @@ jobs:
         pwd
         ls -l 
     displayName: workaround for JFrog Audit
+  - task: JfrogCliV2@1
+    inputs:
+      jfrogPlatformConnection: 'yann-sbx'
+      command: |
+        jf -v
+        jf nuget config --repo-resolve ps-nuget
+    displayName: Init JFrog CLI
+
+
 
 
