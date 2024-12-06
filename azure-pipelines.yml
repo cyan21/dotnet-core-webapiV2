@@ -74,8 +74,8 @@ jobs:
     JFROG_CLI_BUILD_NUMBER: $(Build.BuildNumber)
     APP_VERSION: 1.0.0
     GENERIC_REPO: yann-generic
-  dependsOn:
-  - dotnet_lib
+#  dependsOn:
+#  - dotnet_lib
   steps: 
   - task: JfrogCliV2@1
     inputs:
