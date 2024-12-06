@@ -32,7 +32,17 @@ jobs:
         ls -l ${AGENT_TEMPDIRECTORY}
         ls -l ${JFROG_CLI_TEMP_DIR}
         ls -l ${SYSTEM_DEFAULTWORKINGDIRECTORY}
+        pwd
+        ls -l 
+        echo $(System.DefaultWorkingDirectory)
+        cp MyLib/greeting/greeting.csproj .
+        cat greeting.csproj
     displayName: workaround for JFrog Audit
+  - task: JFrogAudit@1
+    inputs:
+      xrayConnection: 'new-stg-soleng-xray'
+      watchesSource: 'none'
+      allowFailBuild: false
   - task: JFrogDotnetCore@1
     inputs:
       command: 'restore'
@@ -42,6 +52,7 @@ jobs:
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
+
   - task: JFrogAudit@1
     inputs:
       xrayConnection: 'new-stg-soleng-xray'
@@ -49,12 +60,7 @@ jobs:
       workingDirectory: 'MyLib/greeting/'
       watchesSource: 'none'
       allowFailBuild: false
-  - task: CmdLine@2
-    inputs:
-      script: |
-        ls -l  ${AGENT_TEMPDIRECTORY}
-        ls -l ${JFROG_CLI_TEMP_DIR}
-        ls -l ${JFROG_CLI_TEMP_DIR}/jfrog/
+
 - job: dotnet_lib_test
   dependsOn:
   - dotnet_lib
@@ -63,6 +69,7 @@ jobs:
     inputs:
       script: |
         ls -l ${AGENT_TEMPDIRECTORY}
+
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
@@ -73,7 +80,7 @@ jobs:
       command: 'push'
       artifactoryConnection: 'new-stg-soleng'
       targetDeployRepo: 'urs-dotnet'
-      targetDeployPath: 'test'
+      targetDeployPath: 'azure'
       pathToNupkg: 'MyLib/greeting/**/*.nupkg'
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
