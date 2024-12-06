@@ -16,12 +16,14 @@ variables:
   value: 2.72.2
 - name: JFROG_CLI_BUILD_URL
   value: "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)" 
-
+- name: SKIP_LIB
+  value: TRUE
 pool:
   vmImage: ubuntu-latest
 
 jobs:
 - job: dotnet_lib
+  condition: eq(variables.SKIP_LIB, TRUE)
   steps:  
   - task: CmdLine@2
     inputs:
@@ -34,7 +36,7 @@ jobs:
         pwd
         ls -l 
         dotnet -h
-    displayName: workaround for JFrog Audit
+    displayName: test
 
   - task: JfrogCliV2@1
     inputs:
@@ -60,8 +62,52 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf rt u "MyLib/greeting/**/*.nupkg" ps-nuget --module=dotnet
-    displayName: Publish lib
+        jf rt u --flat=true "MyLib/greeting/**/*.nupkg" ps-nuget --module=dotnet
+        jf rt bag
+        jf rt bce
+        jf rt bp 
+    displayName: Publish lib and Build Info
+
+- job: dotnet_webapi
+  variables:
+    JFROG_CLI_BUILD_NAME: dotnet-webapi
+    JFROG_CLI_BUILD_NUMBER: $(Build.BuildNumber)
+    APP_VERSION: 1.0.0
+    GENERIC_REPO: yann-generic
+  dependsOn:
+  - dotnet_lib
+  steps: 
+  - task: JfrogCliV2@1
+    inputs:
+      jfrogPlatformConnection: 'psemea'
+      useCustomVersion: true
+      cliVersion: '$(jfrogCliVersion)'
+      command: |
+        jf dotnetc --repo-resolve ps-nuget
+        jf dotnet restore MyWebAPI/ --module=dotnet
+    displayName: Pull dependencies 
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: build
+      projects: MyWebAPI
+      arguments: -c Release
+
+  - task: JfrogCliV2@1
+    inputs:
+      jfrogPlatformConnection: 'psemea'
+      useCustomVersion: true
+      cliVersion: $(jfrogCliVersion)
+      command: |
+        jf rt dotnet publish -c Release MyWebAPI/ --module=dotnet
+    displayName: Publish application
+
+  - task: CmdLine@2
+    inputs:
+      script: |
+        ls -l MyWebAPI/bin/Release/
+        tar czvf webapi-$(APP_VERSION).tar.gz -C MyWebAPI/bin/Release/netcoreapp3.1/publish $(ls MyWebAPI/bin/Release/netcoreapp3.1/publish)
+    displayName: Generate tarball
 
   - task: JfrogCliV2@1
     inputs:
@@ -69,5 +115,7 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf rt bp 
-    displayName: Publish Build Info
+        jf rt u webapi-$(APP_VERSION).tar.gz $(GENERIC_REPO)  --module=dotnet
+        jf rt bce
+        jf rt bp
+    displayName: Publish application
