@@ -50,7 +50,7 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf dotnet restore MyLib
+        jf dotnet restore MyLib/greeting
     displayName: Dotnet restore 
 
   - task: JfrogCliV2@1
