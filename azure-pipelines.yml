@@ -6,6 +6,8 @@
 variables:
 - name: JFROG_CLI_LOG_LEVEL
   value: DEBUG 
+- name: JFROG_CLI_TEMP_DIR
+  value: /home/vsts/work/_temp
 
 trigger:
 - azure-pipelines
@@ -26,9 +28,12 @@ jobs:
   - task: CmdLine@2
     inputs:
       script: |
+        env | grep JFROG 
+        ls -l ${AGENT_TEMPDIRECTORY}
+        ls -l ${JFROG_CLI_TEMP_DIR}
+        ls -l ${SYSTEM_DEFAULTWORKINGDIRECTORY}
         pwd
         ls -l 
-        ls -l
         echo $(System.DefaultWorkingDirectory)
         cp MyLib/greeting/greeting.csproj .
         cat greeting.csproj
@@ -47,6 +52,24 @@ jobs:
       collectBuildInfo: true
       buildName: '$(Build.DefinitionName)'
       buildNumber: '$(Build.BuildNumber)'
+
+  - task: JFrogAudit@1
+    inputs:
+      xrayConnection: 'new-stg-soleng-xray'
+#      workingDirectory: '$(System.DefaultWorkingDirectory)/MyLib/greeting/'
+      workingDirectory: 'MyLib/greeting/'
+      watchesSource: 'none'
+      allowFailBuild: false
+
+- job: dotnet_lib_test
+  dependsOn:
+  - dotnet_lib
+  steps:  
+  - task: CmdLine@2
+    inputs:
+      script: |
+        ls -l ${AGENT_TEMPDIRECTORY}
+
   - task: DotNetCoreCLI@2
     inputs:
       command: 'build'
