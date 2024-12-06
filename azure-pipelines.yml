@@ -17,13 +17,13 @@ variables:
 - name: JFROG_CLI_BUILD_URL
   value: "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)" 
 - name: SKIP_LIB
-  value: TRUE
+  value: true
 pool:
   vmImage: ubuntu-latest
 
 jobs:
 - job: dotnet_lib
-  condition: eq(variables.SKIP_LIB, TRUE)
+  condition: eq(variables.SKIP_LIB, true)
   steps:  
   - task: CmdLine@2
     inputs:
@@ -99,6 +99,7 @@ jobs:
       useCustomVersion: true
       cliVersion: $(jfrogCliVersion)
       command: |
+        jf dotnetc --repo-resolve ps-nuget
         jf rt dotnet publish -c Release MyWebAPI/ --module=dotnet
     displayName: Publish application
 
