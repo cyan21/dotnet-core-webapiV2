@@ -23,7 +23,7 @@ pool:
 
 jobs:
 - job: dotnet_lib
-  condition: eq(variables.SKIP_LIB, true)
+  condition: eq(variables.SKIP_LIB, false)
   steps:  
   - task: CmdLine@2
     inputs:
@@ -84,7 +84,7 @@ jobs:
       cliVersion: '$(jfrogCliVersion)'
       command: |
         jf dotnetc --repo-resolve ps-nuget
-        jf dotnet restore MyWebAPI/ --module=dotnet
+        jf dotnet restore MyWebAPI/ --module=dotnet --build-name=$(JFROG_CLI_BUILD_NAME)
     displayName: Pull dependencies 
 
   - task: DotNetCoreCLI@2
@@ -100,7 +100,7 @@ jobs:
       cliVersion: $(jfrogCliVersion)
       command: |
         jf dotnetc --repo-resolve ps-nuget
-        jf rt dotnet publish -c Release MyWebAPI/ --module=dotnet
+        jf rt dotnet publish -c Release MyWebAPI/ --module=dotnet --build-name=$(JFROG_CLI_BUILD_NAME)
     displayName: Publish application
 
   - task: CmdLine@2
