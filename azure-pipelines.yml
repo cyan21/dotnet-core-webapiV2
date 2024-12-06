@@ -35,7 +35,7 @@ jobs:
     displayName: workaround for JFrog Audit
   - task: JfrogCliV2@1
     inputs:
-      jfrogPlatformConnection: 'yann-sbx'
+      jfrogPlatformConnection: 'psemea'
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
@@ -44,7 +44,7 @@ jobs:
     displayName: Init JFrog CLI
   - task: JfrogCliV2@1
     inputs:
-      jfrogPlatformConnection: 'yann-sbx'
+      jfrogPlatformConnection: 'psemea'
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
