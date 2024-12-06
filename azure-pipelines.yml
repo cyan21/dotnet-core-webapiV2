@@ -24,13 +24,13 @@ jobs:
       jfrogPlatformConnection: 'yann-sbx'
       command: |
         jf -v
-        date
-        echo ${JFROG_CLI_BUILD_NUMBER}
         jf nuget config --repo-resolve ps-nuget
+    displayName: Init JFrog CLI
 
   - task: CmdLine@2
     inputs:
       script: |
+        echo ${JFROG_CLI_BUILD_NUMBER}
         env | grep JFROG 
         ls -l ${AGENT_TEMPDIRECTORY}
         ls -l ${JFROG_CLI_TEMP_DIR}
