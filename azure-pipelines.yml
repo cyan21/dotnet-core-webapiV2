@@ -51,6 +51,27 @@ jobs:
         jf audit --working-dirs MyLib
     displayName: Audit
 
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'build'
+      projects: 'MyLib'
+      arguments: '-c Release'
+    displayName: Dotnet Build
 
+  - task: JfrogCliV2@1
+    inputs:
+      jfrogPlatformConnection: 'psemea'
+      useCustomVersion: true
+      cliVersion: '$(jfrogCliVersion)'
+      command: |
+        jf rt u "MyLib/greeting/**/*.nupkg" ps-nuget
+    displayName: Publish lib
 
-
+  - task: JfrogCliV2@1
+    inputs:
+      jfrogPlatformConnection: 'psemea'
+      useCustomVersion: true
+      cliVersion: '$(jfrogCliVersion)'
+      command: |
+        jf rt bp 
+    displayName: Publish Build Info
