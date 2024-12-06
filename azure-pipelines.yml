@@ -14,6 +14,8 @@ variables:
   value: /home/vsts/work/_temp
 - name: jfrogCliVersion
   value: 2.72.2
+- name: JFROG_CLI_BUILD_URL
+  value: "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)" 
 
 pool:
   vmImage: ubuntu-latest
@@ -41,7 +43,7 @@ jobs:
       cliVersion: '$(jfrogCliVersion)'
       command: |
         jf dotnetc --repo-resolve ps-nuget
-        jf dotnet restore MyLib/greeting
+        jf dotnet restore MyLib/greeting --module=dotnet
         jf audit --working-dirs MyLib
     displayName: Audit
 
@@ -58,7 +60,7 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf rt u "MyLib/greeting/**/*.nupkg" ps-nuget
+        jf rt u "MyLib/greeting/**/*.nupkg" ps-nuget --module=dotnet
     displayName: Publish lib
 
   - task: JfrogCliV2@1
