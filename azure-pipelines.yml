@@ -9,7 +9,7 @@ variables:
 - name: JFROG_CLI_BUILD_NUMBER
   value: $(Build.BuildNumber)
 - name: JFROG_CLI_LOG_LEVEL
-  value: DEBUG 
+  value: INFO 
 - name: JFROG_CLI_TEMP_DIR
   value: /home/vsts/work/_temp
 - name: jfrogCliVersion
@@ -42,6 +42,14 @@ jobs:
         jf -v
         jf nugetc --repo-resolve ps-nuget
     displayName: Init JFrog CLI
+  - task: JfrogCliV2@1
+    inputs:
+      jfrogPlatformConnection: 'yann-sbx'
+      useCustomVersion: true
+      cliVersion: '$(jfrogCliVersion)'
+      command: |
+        jf audit --working-dirs MyLib
+    displayName: Audit
 
 
 
