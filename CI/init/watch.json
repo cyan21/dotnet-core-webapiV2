@@ -8,7 +8,7 @@
         "resources": [
             {
                 "type": "repository",
-                "name": "vns-nuget-dev-local",
+                "name": "urs-nuget-dev-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -19,7 +19,7 @@
             },
             {
                 "type": "repository",
-                "name": "vns-nuget-rc-local",
+                "name": "urs-nuget-rc-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -30,19 +30,7 @@
             },
             {
                 "type": "repository",
-                "name": "vns-docker-release-local",
-                "bin_mgr_id": "unused",
-                "filters": [
-                    {
-                        "type": "regex",
-                        "value": ".*"
-                    }
-                ]
-            },
-            {
-                "type": "repository",
-                "repo_type": "remote",
-                "name": "vns-nugetorg-remote",
+                "name": "urs-docker-release-local",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -54,7 +42,19 @@
             {
                 "type": "repository",
                 "repo_type": "remote",
-                "name": "vns-dockerhub-remote",
+                "name": "urs-nugetorg-remote",
+                "bin_mgr_id": "unused",
+                "filters": [
+                    {
+                        "type": "regex",
+                        "value": ".*"
+                    }
+                ]
+            },
+            {
+                "type": "repository",
+                "repo_type": "remote",
+                "name": "urs-dockerhub-remote",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {
@@ -66,7 +66,7 @@
             {
                 "type": "repository",
                 "repo_type": "remote",
-                "name": "vns-mcr-remote",
+                "name": "urs-mcr-remote",
                 "bin_mgr_id": "unused",
                 "filters": [
                     {

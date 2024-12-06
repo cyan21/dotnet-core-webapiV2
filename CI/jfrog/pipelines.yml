@@ -18,7 +18,7 @@ resources:
          commit: true
          pullRequestCreate: true
          pullRequestClose: true
-         
+
   - name:  {{ .Values.dotnetInitResources.buildInfo.resourceName }}
     type: BuildInfo 
     configuration:
@@ -124,7 +124,7 @@ pipelines:
             - name: {{ .Values.dotnetProject.dockerIntegration }}
         execution:
           onStart:
-            - cd ${res_{{ .Values.dotnetInitResources.gitRepo.name }}_resourcePath}/CI/jfrog
+            - cd ${res_{{ .Values.dotnetInitResources.gitRepo.name }}_resourcePath}/CI/init/
             - git checkout {{ .Values.dotnetInitResources.gitRepo.branches.include }}
             - ls -l && chmod +x init.sh
             - ./init.sh -u  ${int_{{ .Values.dotnetProject.artifactoryIntegration }}_url%/artifactory} -p ${int_{{ .Values.dotnetProject.artifactoryIntegration }}_apikey} -l ${int_{{ .Values.dotnetProject.artifactoryIntegration }}_user}
