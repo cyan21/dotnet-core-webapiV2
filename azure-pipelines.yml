@@ -102,13 +102,14 @@ jobs:
       cliVersion: $(jfrogCliVersion)
       command: |
         jf dotnetc --repo-resolve ps-nuget
-        jf rt dotnet publish -c Release MyWebAPI/ --module=dotnet --build-name $(JFROG_CLI_BUILD_NAME) --build-number $(Build.BuildNumber)
+        jf dotnet publish -c Release MyWebAPI/ --module=dotnet --build-name $(JFROG_CLI_BUILD_NAME) --build-number $(Build.BuildNumber)
     displayName: Publish application
 
   - task: CmdLine@2
     inputs:
       script: |
         ls -l MyWebAPI/bin/Release/
+        jf rt bad  --regexp=true $(JFROG_CLI_BUILD_NAME) $(JFROG_CLI_BUILD_NUMBER) "./*.dll"
         tar czvf webapi-$(APP_VERSION).tar.gz -C MyWebAPI/bin/Release/netcoreapp3.1/publish $(ls MyWebAPI/bin/Release/netcoreapp3.1/publish)
     displayName: Generate tarball
 
