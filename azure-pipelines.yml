@@ -4,8 +4,6 @@
 # https://aka.ms/yaml
 
 variables:
-- name: JFROG_CLI_BUILD_NAME
-  value: dotnet-lib
 - name: JFROG_CLI_BUILD_NUMBER
   value: $(Build.BuildNumber)
 - name: JFROG_CLI_LOG_LEVEL
@@ -23,7 +21,9 @@ pool:
 
 jobs:
 - job: dotnet_lib
-  condition: eq(variables.RUN_JOB, true)
+  variables: 
+    JFROG_CLI_BUILD_NAME : dotnet-lib
+  condition: eq(variables.RUN_JOB, false)
   steps:  
   - task: CmdLine@2
     inputs:
@@ -70,7 +70,7 @@ jobs:
     displayName: Publish lib and Build Info
 
 - job: dotnet_webapi
-  condition: eq(variables.RUN_JOB, false)
+  condition: eq(variables.RUN_JOB, true)
   variables:
     JFROG_CLI_BUILD_NAME: dotnet-webapi
     JFROG_CLI_BUILD_NUMBER: $(Build.BuildNumber)
@@ -86,7 +86,7 @@ jobs:
       cliVersion: '$(jfrogCliVersion)'
       command: |
         jf dotnetc --repo-resolve ps-nuget
-        jf dotnet restore MyWebAPI/ --module=dotnet --build-name=$(JFROG_CLI_BUILD_NAME)
+        jf dotnet restore MyWebAPI/ --module=dotnet --build-name $(JFROG_CLI_BUILD_NAME) --build-number $(Build.BuildNumber)
     displayName: Pull dependencies 
 
   - task: DotNetCoreCLI@2
@@ -102,7 +102,7 @@ jobs:
       cliVersion: $(jfrogCliVersion)
       command: |
         jf dotnetc --repo-resolve ps-nuget
-        jf rt dotnet publish -c Release MyWebAPI/ --module=dotnet --build-name=$(JFROG_CLI_BUILD_NAME)
+        jf rt dotnet publish -c Release MyWebAPI/ --module=dotnet --build-name $(JFROG_CLI_BUILD_NAME) --build-number $(Build.BuildNumber)
     displayName: Publish application
 
   - task: CmdLine@2
@@ -118,10 +118,10 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf rt u webapi-$(APP_VERSION).tar.gz $(GENERIC_REPO)  --module=dotnet --build-name=$(JFROG_CLI_BUILD_NAME)
-        jf rt bce $(JFROG_CLI_BUILD_NAME)
-        jf rt bag $(JFROG_CLI_BUILD_NAME)
-        jf rt bp $(JFROG_CLI_BUILD_NAME)
+        jf rt u webapi-$(APP_VERSION).tar.gz $(GENERIC_REPO)  --module=dotnet --build-name $(JFROG_CLI_BUILD_NAME) --build-number $(Build.BuildNumber)
+        jf rt bce $(JFROG_CLI_BUILD_NAME) $(Build.BuildNumber)
+        jf rt bag $(JFROG_CLI_BUILD_NAME) $(Build.BuildNumber)
+        jf rt bp $(JFROG_CLI_BUILD_NAME) $(Build.BuildNumber)
     displayName: Publish application
 
 - job: dotnet_docker
