@@ -23,7 +23,7 @@ pool:
 
 jobs:
 - job: dotnet_lib
-  condition: eq(variables.RUN_JOB, false)
+  condition: eq(variables.RUN_JOB, true)
   steps:  
   - task: CmdLine@2
     inputs:
@@ -45,7 +45,7 @@ jobs:
       cliVersion: '$(jfrogCliVersion)'
       command: |
         jf dotnetc --repo-resolve ps-nuget
-        jf dotnet restore MyLib/greeting --module=dotnet
+        jf dotnet restore MyLib/greeting --module=dotnet --build-name $(JFROG_CLI_BUILD_NAME) --build-number $(Build.BuildNumber)
         jf audit --working-dirs MyLib
     displayName: Audit
 
@@ -62,10 +62,11 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf rt u --flat=true "MyLib/greeting/**/*.nupkg" ps-nuget --module=dotnet
-        jf rt bag
-        jf rt bce
-        jf rt bp 
+        jf rt u --flat=true "MyLib/greeting/**/*.nupkg" ps-nuget --module=dotnet --build-name $(JFROG_CLI_BUILD_NAME) --build-number $(Build.BuildNumber)
+        jf rt bce $(JFROG_CLI_BUILD_NAME) $(Build.BuildNumber)
+        jf rt bag $(JFROG_CLI_BUILD_NAME) $(Build.BuildNumber)
+        jf rt bce $(JFROG_CLI_BUILD_NAME) $(Build.BuildNumber)
+        jf rt bp  $(JFROG_CLI_BUILD_NAME) $(Build.BuildNumber)
     displayName: Publish lib and Build Info
 
 - job: dotnet_webapi
@@ -124,7 +125,7 @@ jobs:
     displayName: Publish application
 
 - job: dotnet_docker
-  condition: eq(variables.RUN_JOB, true)
+  condition: eq(variables.RUN_JOB, false)
   variables:
     JFROG_CLI_BUILD_NAME: dotnet-webapi
     JFROG_CLI_BUILD_NUMBER: $(Build.BuildNumber)
