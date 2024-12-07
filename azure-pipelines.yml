@@ -16,14 +16,14 @@ variables:
   value: 2.72.2
 - name: JFROG_CLI_BUILD_URL
   value: "$(System.TeamFoundationCollectionUri)$(System.TeamProject)/_build/results?buildId=$(Build.BuildId)" 
-- name: SKIP_LIB
+- name: RUN_JOB
   value: true
 pool:
   vmImage: ubuntu-latest
 
 jobs:
 - job: dotnet_lib
-  condition: eq(variables.SKIP_LIB, false)
+  condition: eq(variables.RUN_JOB, false)
   steps:  
   - task: CmdLine@2
     inputs:
@@ -69,7 +69,7 @@ jobs:
     displayName: Publish lib and Build Info
 
 - job: dotnet_webapi
-  condition: eq(variables.SKIP_LIB, false)
+  condition: eq(variables.RUN_JOB, false)
   variables:
     JFROG_CLI_BUILD_NAME: dotnet-webapi
     JFROG_CLI_BUILD_NUMBER: $(Build.BuildNumber)
@@ -124,14 +124,12 @@ jobs:
     displayName: Publish application
 
 - job: dotnet_docker
-  condition: eq(variables.SKIP_LIB, false)
+  condition: eq(variables.RUN_JOB, true)
   variables:
     JFROG_CLI_BUILD_NAME: dotnet-webapi
     JFROG_CLI_BUILD_NUMBER: $(Build.BuildNumber)
     APP_VERSION: 1.0.0
     GENERIC_REPO: yann-generic
-#  dependsOn:
-#  - dotnet_lib
   steps: 
   - task: JfrogCliV2@1
     inputs:
@@ -143,5 +141,7 @@ jobs:
     displayName: Fetch tarball
   - task: Docker@2
     inputs:
+      containerRegistry: 'psemea-docker'
+      repository: 'yann-docker'
       command: 'buildAndPush'
       Dockerfile: 'CI/runtime/Dockerfile'
