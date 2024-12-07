@@ -137,8 +137,15 @@ jobs:
       useCustomVersion: true
       cliVersion: '$(jfrogCliVersion)'
       command: |
-        jf rt dl $(GENERIC_REPO)/webapi-$(APP_VERSION).tar.gz CI/runtime/dotnet.tar.gz
+        jf rt dl $(GENERIC_REPO)/webapi-$(APP_VERSION).tar.gz CI/runtime/
     displayName: Fetch tarball
+  - task: CmdLine@2
+    inputs:
+      script: |
+        cd CI/runtime
+        mkdir out
+        tar -xzvf webapi-$(APP_VERSION).tar.gz -C out/
+    displayName: Extract tarball
   - task: Docker@2
     inputs:
       containerRegistry: 'psemea-docker'
