@@ -149,6 +149,6 @@ jobs:
   - task: Docker@2
     inputs:
       containerRegistry: 'psemea-docker'
-      repository: 'yann-docker'
+      repository: 'yann-docker/yann-webapi'
       command: 'buildAndPush'
       Dockerfile: 'CI/runtime/Dockerfile'
